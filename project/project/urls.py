@@ -16,10 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
 
 urlpatterns = [
 	path('admin/', admin.site.urls),
   
 	# http://127.0.0.1:8000/movies/...
-	path('movies/', include('movies.urls'))
+	path('', lambda request: redirect('movies/', permanent=True)),
+    path('movies/', include('movies.urls')),
+
+    # http://127.0.0.1:8000/authentication/...
+    path('authentication/', include('authentication.urls')),
 ]

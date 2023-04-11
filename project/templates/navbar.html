@@ -1,0 +1,34 @@
+{% load static %}  
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">MovieStreaming</a>
+
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" href="#">
+            <img src="{% static 'icons/person.svg' %}"/>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+            <li><a class="dropdown-item" href="{% url 'signup' %}">Sign up</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <form class="d-flex" action="{% url 'home' %}" method="GET">
+        <div class="input-group input-group-sm">
+          <div class="input-group-prepend">
+            <span class="input-group-text bg-transparent rounded-0">
+              <img src="{% static 'icons/search.svg' %}">
+            </span>
+          </div>
+          <input type="text" name="search" class="form-control rounded-0" placeholder="search">
+        </div>
+      </form>
+
+    </div>
+  </div>
+</nav>
