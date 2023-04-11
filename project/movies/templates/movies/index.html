@@ -11,10 +11,50 @@
   <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 </head>
 <body>
-  
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">MovieStreaming</a>
+      
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#">
+              <img src="{% static 'icons/person.svg' %}"/>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#">Login</a></li>
+              <li><a class="dropdown-item" href="#">Sign up</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <form class="d-flex" action="{% url 'home' %}" method="GET">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-transparent rounded-0">
+                <img src="{% static 'icons/search.svg' %}">
+              </span>
+            </div>
+            <input type="text" class="form-control rounded-0" placeholder="search">
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- Content -->
   <div class="container">
-    <h1>hello world</h1>
+    <h1>Content here</h1>
   </div>
 
+  <!-- Footer-->
+
+
+
+  <!-- Bootstrap js -->
+  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 </body>
 </html>
