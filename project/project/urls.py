@@ -18,12 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import redirect
 
+from movies.views import home
+
 urlpatterns = [
 	path('admin/', admin.site.urls),
   
-	# http://127.0.0.1:8000/movies/...
-	path('', lambda request: redirect('movies/', permanent=True)),
-    path('movies/', include('movies.urls')),
+	# http://127.0.0.1:8000/home/
+	path('', lambda request: redirect('home/', permanent=True)),
+    path('home/', home, name="home"),
 
     # http://127.0.0.1:8000/authentication/...
     path('authentication/', include('authentication.urls')),

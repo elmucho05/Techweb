@@ -1,6 +1,10 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render
+from .models import Genre
 
-# Create your views here.
 def home(request):
   # search_query = request.GET.get("search", None)
-  return render(request, "movies/index.html") 
+  genres = Genre.objects.all()
+  context = {"genres" : genres}
+  return render(request, "movies/home.html", context) 
+
+

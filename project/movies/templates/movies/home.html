@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movies</title>
+
+  {% load static %}  
+  <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  {% include "navbar.html" %}
+
+  <!-- Content -->
+  <div class="container py-5">
+
+    <select class="form-select mb-5" id="selectGenre">
+      <option selected>Generi</option>
+      {% for genre in genres %}
+      <option value="{{genre.name}}">{{genre.name}}</option>
+      {% endfor %}
+    </select>
+
+    <h1 class="display-6 d-inline mt-3" style="font-size: 2.0rem;">Titoli del momento</h1>
+    <a href="#" class="d-inline px-3">sfoglia tutti</a>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+      {% for i in '1234'|make_list %}
+      <div class="col">
+        <div class="card">
+          <img src="{% static 'images/image.jpg' %}" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="container border border-2 border-top mt-5 mb-5"></div>
+
+    <h1 class="display-6 d-inline mt-3" style="font-size: 2.0rem;">Aggiunti di recente</h1>
+    <a href="#" class="d-inline px-3">sfoglia tutti</a>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+      {% for i in '1234'|make_list %}
+      <div class="col">
+        <div class="card">
+          <img src="{% static 'images/image.jpg' %}" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="container border border-2 border-top mt-5 mb-5"></div>
+
+    <h1 class="display-6 d-inline mt-3" style="font-size: 2.0rem;">Popolari</h1>
+    <a href="#" class="d-inline px-3">sfoglia tutti</a>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+      {% for i in '1234'|make_list %}
+      <div class="col">
+        <div class="card">
+          <img src="{% static 'images/image.jpg' %}" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% for genre in genres %}
+    <div class="container border border-2 border-top mt-5 mb-5"></div>
+    <h1 class="display-6 d-inline mt-3" style="font-size: 2.0rem;">{{ genre }}</h1>
+    <a href="#" class="d-inline px-3">sfoglia tutti</a>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+      {% for i in '1234'|make_list %}
+      <div class="col">
+        <div class="card">
+          <img src="{% static 'images/image.jpg' %}" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  
+  </div>
+
+
+  <!-- Footer-->
+  {% include "footer.html" %}
+  
+
+
+
+  <!-- include jquery js -->
+  <script src="{% static 'jquery/jquery.js' %}"></script>
+  <!-- include bootstrap js -->
+  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+      
+      $("#selectGenre").on("change", function(e){
+        const genre = $("option:selected", this).text();
+        const newUrl = window.location.origin + `{% url 'home' %}?genre=${genre}`; 
+        window.location.href = newUrl;
+
+      });
+    });
+    
+  </script>
+</body>
+</html>
