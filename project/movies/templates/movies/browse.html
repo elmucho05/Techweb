@@ -8,6 +8,15 @@
 
   {% load static %}  
   <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <style>
+    .card { 
+      transition: all .2s ease-in-out; 
+    }
+    .card:hover { 
+      cursor: pointer; 
+      transform: scale(1.05); 
+    }
+  </style>
 </head>
 <body>
 
@@ -15,18 +24,32 @@
   {% include "navbar.html" %}
 
   <!-- Content -->
-  <div class="container py-5">
+  <div class="container-fluid p-5">
 
     {% if genre %}
-    <h1>{{ genre }}</h1>
+    <div class="border-bottom">
+      <h1 class="display-6" style="font-size: 2rem;">{{ genre }}</h1>
+    </div>
+    <div class="mb-5"></div> <!-- seprator -->
+    
+    {% elif search %}
+    <div class="alert alert-info">
+      {% if films %}
+        {{ films|length }} Risultati per <b>{{ search }}</b>
+      {% else %}
+        Nessun risultato <b>{{ search }}</b>
+      {% endif %}
+    </div>
     {% endif %}
 
+
+
     {% if films %}
-    <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
+    <div class="row row-cols-1 row-cols-md-6">
       {% for film in films %}
       <div class="col">
-        <div class="card h-100">
-          <img src="{{ film.thumb.url }}" class="card-img-top" style="height: 200px;">
+        <div class="card h-100 border-0 pe-auto" redirect_to="{% url 'details' film.id %}">
+          <img src="{{ film.thumb.url }}" class="card-img-top rounded-0" style="height: 200px;">
           <div class="card-body bg-light">
             <h6>{{ film.name }}</h6>
           </div>
@@ -34,11 +57,9 @@
       </div>
       {% endfor %}
     </div>
-    {% else %}
-    <div class="alert alert-info">
-      La sezione è vuota
-    </div>
+    <div class="mb-5"></div> <!-- seprator -->
     {% endif %}
+    
   </div>
 
 

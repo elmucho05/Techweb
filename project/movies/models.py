@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import FileExtensionValidator
 
 class Genre(models.Model):
   name = models.CharField(primary_key=True, max_length=30)
@@ -13,6 +14,8 @@ class Film(models.Model):
   release_date  = models.DateField()
   description   = models.TextField()
   thumb         = models.ImageField(upload_to='thumbs')
+  video         = models.FileField(upload_to='videos',null=True, 
+                    validators=[FileExtensionValidator(allowed_extensions=['MOV','avi','mp4','webm','mkv'])])
   duration      = models.IntegerField()
   genre         = models.ForeignKey(Genre, null=True, on_delete=models.SET_NULL)
 

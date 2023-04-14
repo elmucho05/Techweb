@@ -1,30 +1,31 @@
 from django.shortcuts import render
-from .models import Genre, Film
+from .models import Film
 
 from django.db import connection
 
-def get_pair_genre_count_sql():
-  pair = [ ]
-  with connection.cursor() as cursor:
-    raw = "SELECT genre_id, count(*) from movies_film group by genre_id order by genre_id"
-    cursor.execute(raw)
-    pair = cursor.fetchall()
-  return pair
-
-
 def home(request):
-  genres = get_pair_genre_count_sql()
+  films = Film.objects.all().order_by("genre_id")
+  genres = films.values("genre_id").distinct()
   context = {
     "genres" : genres,
-    "films" : Film.objects.all(),
+    "films" : films,
   }
   return render(request, "movies/home.html", context) 
 
 def browse(request):
-  genre = request.GET.get("genre", None)
-  films = Film.objects.filter(genre=genre)
+  genre  = request.GET.get("genre", None)
+  search = request.GET.get("search", None)
+
+  films = [ ]
+
+  if genre:
+    films = Film.objects.filter(genre=genre)
+  elif search:
+    films = Film.objects.filter(name__icontains=search)
+
   context = {
     "genre" : genre,
+    "search" : search,
     "films" : films,
   }
   return render(request, "movies/browse.html", context) 
