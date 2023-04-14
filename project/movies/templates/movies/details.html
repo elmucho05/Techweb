@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Details</title>
+
+  {% load static %}  
+  <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  {% include "navbar.html" %}
+
+  <!-- Content -->
+  <div class="container py-5">
+
+  <div class="mb-5 border-bottom">
+    <h1>{{ film.name }}</h1>
+  </div>
+
+
+    <div class="card border-0 mb-3">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img src="{{ film.thumb.url }}" class="img-fluid rounded-0">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-2">Descrizione:</div>
+              <div class="col-10">{{ film.description }}</div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-2">Uscita:</div>
+              <div class="col-10">{{ film.release_date }}</div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-2">Durata:</div>
+              <div class="col-10">{{ film.duration }} min</div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-2">Regista:</div>
+              <div class="col-10">{{ film.director }}</div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-2">Genere:</div>
+              <div class="col-10">{{ film.genre }}</div>
+            </div>
+
+            <button class="btn btn-primary rounded-pill">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
+                <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+              </svg>
+              Inizia a vedere
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+
+
+  <!-- Footer-->
+  {% include "footer.html" %}
+  
+
+  <!-- include jquery js -->
+  <script src="{% static 'jquery/jquery.js' %}"></script>
+  <!-- include bootstrap js -->
+  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    
+  </script>
+</body>
+</html>

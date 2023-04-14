@@ -30,6 +30,10 @@ def browse(request):
   return render(request, "movies/browse.html", context) 
 
 
-def details(request, movie):
-  pass
+def details(request, film_id):
+  film = Film.objects.get(id=film_id)
+  context = {
+    "film" : film 
+  }
+  return render(request, "movies/details.html", context) 
 

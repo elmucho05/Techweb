@@ -10,4 +10,6 @@ urlpatterns = [
 
   # http://127.0.0.1:8000/browse/
   path('browse/', views.browse, name="browse"),
+
+  path('film/<int:film_id>', views.details, name="details"),
 ]

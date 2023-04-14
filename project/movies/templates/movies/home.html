@@ -8,6 +8,11 @@
 
   {% load static %}  
   <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+  <style>
+    .card { transition: all .2s ease-in-out; }
+    .card:hover{ cursor: pointer; transform: scale(1.05); }
+  </style>
 </head>
 <body>
 
@@ -32,9 +37,8 @@
     <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
       {% for film in films %}
       <div class="col">
-        <div class="card h-100">
-          <img src="{{ film.thumb.url }}" class="card-img-top" style="height: 200px;">
-          
+        <div class="card h-100 border-0 pe-auto" redirect_to="{% url 'details' film.id %}">
+          <img src="{{ film.thumb.url }}" class="card-img-top rounded-0" style="height: 200px;">
           <div class="card-body bg-light">
             <h6>{{ film.name }}</h6>
           </div>
@@ -64,6 +68,12 @@
         const newUrl = window.location.origin + `{% url 'browse' %}?genre=${genre}`; 
         window.location.href = newUrl;
       });
+
+      $(".card").on("click", function(e){
+        const newUrl = $(this).attr("redirect_to");
+        window.location.href = newUrl;
+      });
+      
     });
     
   </script>
