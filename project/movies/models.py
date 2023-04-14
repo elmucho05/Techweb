@@ -12,9 +12,9 @@ class Film(models.Model):
   director      = models.CharField(max_length=100)
   release_date  = models.DateField()
   description   = models.TextField()
-  thumb         = models.CharField(max_length=200)
+  thumb         = models.ImageField(upload_to='thumbs')
   duration      = models.IntegerField()
-  genre         = models.ForeignKey(Genre, null=True, on_delete=models.SET_NULL )
+  genre         = models.ForeignKey(Genre, null=True, on_delete=models.SET_NULL)
 
   def __str__(self) -> str:
     return self.name
