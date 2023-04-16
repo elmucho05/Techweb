@@ -24,12 +24,12 @@
       <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}
         <div class="form-floating mb-3">
-          <input type="email" class="form-control" id="floatingInput" name="email" placeholder="name@example.com">
-          <label for="floatingInput">Email address</label>
+          <input type="email" class="form-control" name="email" value="simone@gmail.com">
+          <label>Email address</label>
         </div>
         <div class="form-floating">
-          <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
-          <label for="floatingPassword">Password</label>
+          <input type="password" class="form-control" name="password" value="password">
+          <label>Password</label>
         </div>
         <button class="btn btn-primary w-100 mt-3 mb-3" type="submit">invia</button>
         <small>Non ti sei ancora registrato? <a href="{% url 'signup' %}">Registrati</a></small>
@@ -37,5 +37,15 @@
     </div>
   </div>
 
+  <!-- include jquery js -->
+  <script src="{% static 'jquery/jquery.js' %}"></script>
+  <!-- include bootstrap js -->
+  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function(){
+
+    });
+  </script>
 </body>
 </html>

@@ -1,9 +1,13 @@
 from django.db import models
 
-# class User(models.Model):
-#   username = models.CharField(max_length=30)
-#   password = models.CharField(max_length=30)
-#   email    = models.CharField(max_length=320)
+class User(models.Model):
+  email    = models.CharField(max_length=320, primary_key=True)
+  password = models.CharField(max_length=12)
+
+  def __str__(self) -> str:
+    return f"{self.email}:{self.password}"
+
+
 
 # class Billing(models.Model):
 #   user = models.ForeignKey(User, on_delete=models.CASCADE)

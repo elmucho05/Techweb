@@ -74,6 +74,15 @@
   <!-- include bootstrap js -->
   <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $(".card").on("click", function(e){
+        const newUrl = $(this).attr("redirect_to");
+        window.location.href = newUrl;
+      });
+      
+    });
+    
   </script>
 </body>
 </html>
