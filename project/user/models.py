@@ -1,11 +1,14 @@
 from django.db import models
+from django.core.validators import FileExtensionValidator
 
 class User(models.Model):
   email    = models.CharField(max_length=320, primary_key=True)
-  password = models.CharField(max_length=12)
+  password = models.CharField(max_length=128) # hashed password
+  avatar   = models.FileField(upload_to='avatars', null=True, 
+              validators=[FileExtensionValidator(allowed_extensions=['jpg','png','svg'])])
 
   def __str__(self) -> str:
-    return f"{self.email}:{self.password}"
+    return f"{self.email}"
 
 
 

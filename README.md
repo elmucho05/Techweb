@@ -18,3 +18,10 @@ Feature aggiuntive (obbligatorio)
 - i film vengono valutati dagli utenti (registrati) con una valutazione da 1 a 5
 - sistema di raccomandazione dei film  “chi ha visto questo film ha guardato anche...”
 - dashboard per utenti con possibilità di aggiornare i propri dati personali, visualizzare la history dei film visti, dei commenti effettuati, delle valutazioni fatte, visualizzare lo stato dell'abbonamento ...
+
+
+# Comandi
+- source venv/bin/activate
+- python3 manage.py runserver
+- python3 manage.py makemigrations <app>
+- python3 manage.py migrate

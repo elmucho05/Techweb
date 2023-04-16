@@ -1,7 +1,8 @@
 from django.shortcuts import render
+from django.contrib import messages
+from django.utils.safestring import mark_safe
 from .models import Film
 
-from django.db import connection
 
 def home(request):
   films = Film.objects.all().order_by("genre_id")
@@ -16,12 +17,13 @@ def browse(request):
   genre  = request.GET.get("genre", None)
   search = request.GET.get("search", None)
 
-  films = [ ]
+  films = []
 
   if genre:
     films = Film.objects.filter(genre=genre)
   elif search:
     films = Film.objects.filter(name__icontains=search)
+    messages.info(request, mark_safe(f'{len(films)} risultati per <b>{search}</b>'))
 
   context = {
     "genre" : genre,

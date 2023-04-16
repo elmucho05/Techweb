@@ -25,41 +25,45 @@
 
   <!-- Content -->
   <div class="container-fluid p-5">
+    <div class="container-fluid p-5">
 
-    {% if genre %}
-    <div class="border-bottom">
-      <h1 class="display-6" style="font-size: 2rem;">{{ genre }}</h1>
-    </div>
-    <div class="mb-5"></div> <!-- seprator -->
-    
-    {% elif search %}
-    <div class="alert alert-info">
-      {% if films %}
-        {{ films|length }} Risultati per <b>{{ search }}</b>
-      {% else %}
-        Nessun risultato <b>{{ search }}</b>
+      {% if genre %}
+      <div class="border-bottom">
+        <h1 class="display-6" style="font-size: 2rem;">{{ genre }}</h1>
+      </div>
+      <div class="mb-5"></div> <!-- seprator -->
+      
+      {% elif search %}
+      
+      {% include "alert.html" %}
+
+      <!-- <div class="alert alert-info">
+        {% if films %}
+          {{ films|length }} Risultati per <b>{{ search }}</b>
+        {% else %}
+          Nessun risultato <b>{{ search }}</b>
+        {% endif %}
+      </div> -->
       {% endif %}
-    </div>
-    {% endif %}
 
 
 
-    {% if films %}
-    <div class="row row-cols-1 row-cols-md-6">
-      {% for film in films %}
-      <div class="col">
-        <div class="card h-100 border-0 pe-auto" redirect_to="{% url 'details' film.id %}">
-          <img src="{{ film.thumb.url }}" class="card-img-top rounded-0" style="height: 200px;">
-          <div class="card-body bg-light">
-            <h6>{{ film.name }}</h6>
+      {% if films %}
+      <div class="row row-cols-1 row-cols-md-6">
+        {% for film in films %}
+        <div class="col">
+          <div class="card h-100 border-0 pe-auto" redirect_to="{% url 'details' film.id %}">
+            <img src="{{ film.thumb.url }}" class="card-img-top rounded-0" style="height: 200px;">
+            <div class="card-body bg-light">
+              <h6>{{ film.name }}</h6>
+            </div>
           </div>
         </div>
+        {% endfor %}
       </div>
-      {% endfor %}
+      <div class="mb-5"></div> <!-- seprator -->
+      {% endif %}
     </div>
-    <div class="mb-5"></div> <!-- seprator -->
-    {% endif %}
-    
   </div>
 
 
