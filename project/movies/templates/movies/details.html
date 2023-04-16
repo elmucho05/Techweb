@@ -8,6 +8,8 @@
 
   {% load static %}  
   <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <!-- Video.js -->
+  <link href="https://vjs.zencdn.net/8.0.4/video-js.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -25,7 +27,15 @@
     <div class="card border-0 mb-3">
       <div class="row g-0">
         <div class="col-md-4">
-          <img src="{{ film.thumb.url }}" class="img-fluid rounded-0">
+          <video
+            id="{{ film.name }}"
+            class="video-js w-100 h-100"
+            controls
+            preload="auto"
+            poster="{{ film.thumb.url }}"
+            data-setup="{}">
+          <source src="{{ film.videosrc.url }}"  type="video/mp4" />
+        </video>
         </div>
         <div class="col-md-8">
           <div class="card-body">
@@ -59,18 +69,12 @@
             </div>
             <div class="mb-3"></div> <!-- seprator -->
 
-            <button class="btn btn-primary rounded-pill">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
-                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
-              </svg>
-              Guarda ora
-            </button>
-
           </div>
         </div>
       </div>
     </div>
-  
+
+
   </div>
 
 
@@ -82,7 +86,7 @@
   <script src="{% static 'jquery/jquery.js' %}"></script>
   <!-- include bootstrap js -->
   <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-    
-  </script>
+  <!-- Video.js -->
+  <script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
 </body>
 </html>
