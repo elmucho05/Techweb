@@ -3,6 +3,11 @@ from django.contrib import messages
 from django.utils.safestring import mark_safe
 from .models import Film, TVSerie
 
+def home(request):
+  pass
+
+
+
 def view_films(request):
   films = Film.objects.all().order_by("genre_id")
   genres = films.values("genre_id").distinct()
@@ -41,10 +46,19 @@ def view_browse(request):
   }
   return render(request, "movies/browse.html", context) 
 
-def view_details(request, film_id):
-  film = Film.objects.get(id=film_id)
-  context = {
-    "film" : film 
+def view_film_details(request, film_id):
+  title = Film.objects.get(id=film_id)
+  context = { 
+    "title" : title,
+    "type" : "film"
+  }
+  return render(request, "movies/details.html", context) 
+
+def view_tvserie_details(request):
+  title = Film.objects.get(id=film_id)
+  context = { 
+    "title" : title,
+    "type" : "film"
   }
   return render(request, "movies/details.html", context) 
 

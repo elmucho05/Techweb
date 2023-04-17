@@ -10,7 +10,21 @@
 {% include "navbar.html" %}<!-- Navbar -->
 
 <div class="container py-5">
-  <h1>{{ film.name }}</h1>
+  <div class="d-flex justify-content-between">
+    <h1>{{ title.name }}</h1>
+
+    {% if type == "tv-serie" %}
+
+    <select class="form-select rounded-0" id="selectGenre" style="width: 12rem;">
+      <option selected>Generi</option>
+      <option value="{{ genre.genre_id }}">{{ genre.genre_id }}</option>
+    </select>
+
+    {% endif %}
+  </div>
+  
+
+
   <hr>
   
   <div class="mb-5"></div> <!-- separator -->
@@ -19,44 +33,48 @@
     <div class="row g-0">
       <div class="col-md-4">
         <video
-          id="{{ film.name }}"
+          id="{{ title.name }}"
           class="video-js w-100 h-100"
           controls
           preload="auto"
-          poster="{{ film.thumb.url }}"
+          poster="{{ title.thumb.url }}"
           data-setup="{}">
-        <source src="{{ film.videosrc.url }}"  type="video/mp4" />
+        <source src="{{ title.src.url }}"  type="video/mp4"/>
       </video>
       </div>
       <div class="col-md-8">
         <div class="card-body">
           <div class="row">
             <div class="col-2">Descrizione:</div>
-            <div class="col-10">{{ film.description }}</div>
+            <div class="col-10">{{ title.description }}</div>
           </div>
           <div class="mb-3"></div> <!-- separator -->
 
           <div class="row">
             <div class="col-2">Uscita:</div>
-            <div class="col-10">{{ film.release_date }}</div>
+            <div class="col-10">{{ title.release_date }}</div>
           </div>
           <div class="mb-3"></div> <!-- separator -->
 
+          {% if type == "film" %}
           <div class="row">
             <div class="col-2">Durata:</div>
             <div class="col-10">{{ film.duration }} min</div>
           </div>
           <div class="mb-3"></div> <!-- separator -->
+          {% endif %}
 
+          {% if type == "film" %}
           <div class="row">
             <div class="col-2">Regista:</div>
             <div class="col-10">{{ film.director }}</div>
           </div>
           <div class="mb-3"></div> <!-- separator -->
+          {% endif %}
 
           <div class="row">
             <div class="col-2">Genere:</div>
-            <div class="col-10">{{ film.genre }}</div>
+            <div class="col-10">{{ title.genre }}</div>
           </div>
           <div class="mb-3"></div> <!-- separator -->
 
