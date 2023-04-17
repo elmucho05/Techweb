@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from django.contrib import messages
 from django.utils.safestring import mark_safe
-from .models import Film
-from django.contrib.auth import logout, authenticate, login
+from .models import Film, TVSerie
 
-def home(request):
+def view_films(request):
   films = Film.objects.all().order_by("genre_id")
   genres = films.values("genre_id").distinct()
   context = {
@@ -13,7 +12,17 @@ def home(request):
   }
   return render(request, "movies/home.html", context) 
 
-def browse(request):
+def view_tvseries(request):
+  tvseries = TVSerie.objects.all().order_by('genre_id')
+  genres = tvseries.values("genre_id").distinct()
+  
+  context = {
+    "genres" : genres,
+    "tvseries" : tvseries,
+  }
+  return render(request, "movies/home.html", context) 
+
+def view_browse(request):
   genre  = request.GET.get("genre", None)
   search = request.GET.get("search", None)
 
@@ -32,7 +41,7 @@ def browse(request):
   }
   return render(request, "movies/browse.html", context) 
 
-def details(request, film_id):
+def view_details(request, film_id):
   film = Film.objects.get(id=film_id)
   context = {
     "film" : film 
