@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.utils.safestring import mark_safe
 from .models import Film
-
+from django.contrib.auth import logout, authenticate, login
 
 def home(request):
   films = Film.objects.all().order_by("genre_id")
@@ -31,7 +31,6 @@ def browse(request):
     "films" : films,
   }
   return render(request, "movies/browse.html", context) 
-
 
 def details(request, film_id):
   film = Film.objects.get(id=film_id)

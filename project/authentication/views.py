@@ -18,10 +18,12 @@ def login(request):
       if not check_password(plain_password, user.password):
         raise ValidationError("")
       
-      messages.success(request, f'Login completato con successo')
       request.session["user_email"] = user.email
+      request.session["user_id"] = user.id
       if user.avatar:
-        request.session["user_avatar"] = str(user.avatar) 
+        request.session["user_avatar_url"] = str(user.avatar) 
+      
+      messages.success(request, f'Login completato con successo')
     except (ObjectDoesNotExist, ValidationError):
       redirect_to = "login"
       messages.error(request, f'Email o password errati')
@@ -39,8 +41,10 @@ def signup(request):
     redirec_to = "home"
     try:
       user = User.objects.create(email=email, password=encrypted_password)
-      messages.success(request, f'Registrazione completata!') 
+      
       request.session["user_email"] = user.email
+      request.session["user_id"] = user.id
+      messages.success(request, f'Registrazione completata!') 
     except IntegrityError as e:
       messages.warning(request, f'Esiste già un utente con questa email')
       redirec_to = "signup"
@@ -49,10 +53,5 @@ def signup(request):
   return render(request, "authentication/signup.html")
 
 def logout(request):
-  try:
-    del request.session['user_email']
-    del request.session["user_avatar_url"]
-  except Exception:
-    pass  
-
+  request.session.flush()
   return redirect("home")

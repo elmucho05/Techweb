@@ -19,9 +19,14 @@
               data-bs-toggle="dropdown" 
               aria-expanded="false">
             
+            {% load static %}
+            <img {% if user.avatar %}src="{{ user.avatar.url }}" {% else %}src="{% get_media_prefix %}avatars/default.jpg" {% endif %}
+              class="rounded-circle me-2" 
+              width="32" 
+              height="32">
             
-            <img src="https://github.com/mdo.png" class="rounded-circle me-2" width="32" height="32" >
-            <small>simone@gmail.com</small>
+            <small>{{ user.email }}</small>
+            <small>{{ user.avatar }}</small>
           </a>
     
           <ul class="dropdown-menu" aria-labelledby="dropdownUser">
@@ -58,7 +63,7 @@
     <!-- End sidebar -->
 
 
-
+    
     <div class="col-lg-10">
       <div class="container bg-danger">
         hello
@@ -66,23 +71,18 @@
     </div>
   </div>
 </div>
-
-
-
-
 {% endblock %} <!-- End content -->
 
 
 {% block script %}<!-- Start script -->
 <script>
-  $(document).ready(function(){
-    $('.nav-link').on('click', function(){
-      
-      $( ".nav-link" ).each(function( index ) {
-        $(this).removeClass('active');
-      });
-      $(this).addClass('active');
-    });
-  });
+  // $(document).ready(function(){
+  //   $('.nav-link').on('click', function(){
+  //     $( ".nav-link" ).each(function( index ) {
+  //       $(this).removeClass('active');
+  //     });
+  //     $(this).addClass('active');
+  //   });
+  // });
 </script>
 {% endblock %}<!-- End script -->

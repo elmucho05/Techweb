@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import FileExtensionValidator
 
 class User(models.Model):
-  email    = models.CharField(max_length=320, primary_key=True)
+  email    = models.CharField(max_length=320, unique=True)
   password = models.CharField(max_length=128) # hashed password
   avatar   = models.FileField(upload_to='avatars', null=True, 
               validators=[FileExtensionValidator(allowed_extensions=['jpg','png','svg'])])
