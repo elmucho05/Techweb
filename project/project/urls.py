@@ -26,6 +26,10 @@ urlpatterns = [
 	# http://127.0.0.1:8000/...
     path('', include('movies.urls')),
 
+    # http://127.0.0.1:8000/profile/...
+    path('profile', include('user.urls')),
+
     # http://127.0.0.1:8000/authentication/...
     path('authentication/', include('authentication.urls')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,98 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Movies</title>
+{% extends 'base.html' %}
 
-  {% load static %}  
-  <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-  
-  <style>
-    .card { 
-      transition: all .2s ease-in-out; 
-    }
-    .card:hover { 
-      cursor: pointer; 
-      transform: scale(1.05); 
-    }
-  </style>
-</head>
-<body>
+{% block title %}Movies{% endblock %}
 
-  <!-- Navbar -->
-  {% include "navbar.html" %}
+{% block style %} <!-- Start style -->
+<style>
+  .card { 
+    transition: all .2s ease-in-out; 
+  }
+  .card:hover { 
+    cursor: pointer; 
+    transform: scale(1.05); 
+  }
+</style>
+{% endblock %}<!-- End style -->
 
-  <!-- Content -->
+
+{% block content %}<!-- Start content -->
+{% include "navbar.html" %} <!-- Navbar -->
+
+<div class="container-fluid px-5 py-4">
   <div class="container-fluid px-5 py-4">
-    <div class="container-fluid px-5 py-4">
 
-      {% include "alert.html" with dismiss=True %}
-      
-      <select class="form-select rounded-0" id="selectGenre" style="width: 12rem;">
-        <option selected>Generi</option>
-        {% for genre in genres %}
-        <option value="{{ genre.genre_id }}">{{ genre.genre_id }}</option>
-        {% endfor %}
-      </select>
-      <div class="mb-5"></div> <!-- seprator -->
-  
+    {% include "alert.html" with dismiss=True %}
+    
+    <select class="form-select rounded-0" id="selectGenre" style="width: 12rem;">
+      <option selected>Generi</option>
       {% for genre in genres %}
-      <div class="border-bottom">
-        <h1 class="display-6 d-inline" style="font-size: 2rem;">{{ genre.genre_id }}</h1>
-        <a href="{% url 'browse' %}?genre={{ genre.genre_id }}" class="d-inline px-3 text-decoration-none">sfoglia tutti</a>
-      </div>
-      <div class="mb-3"></div> <!-- seprator -->
-  
-      <div class="row row-cols-1 row-cols-md-6">
-        {% for film in films %}
-        {% if film.genre_id == genre.genre_id %}
-        <div class="col">
-          <div class="card h-100 border-0 pe-auto" redirect_to="{% url 'details' film.id %}">
-            <img src="{{ film.thumb.url }}" class="card-img-top rounded-0" style="height: 200px;">
-            <div class="card-body bg-light">
-              <h6>{{ film.name }}</h6>
-            </div>
+      <option value="{{ genre.genre_id }}">{{ genre.genre_id }}</option>
+      {% endfor %}
+    </select>
+    <div class="mb-5"></div> <!-- seprator -->
+
+    {% for genre in genres %}
+    <div class="border-bottom">
+      <h1 class="display-6 d-inline" style="font-size: 2rem;">{{ genre.genre_id }}</h1>
+      <a href="{% url 'browse' %}?genre={{ genre.genre_id }}" class="d-inline px-3 text-decoration-none">sfoglia tutti</a>
+    </div>
+    <div class="mb-3"></div> <!-- seprator -->
+
+    <div class="row row-cols-1 row-cols-md-6">
+      {% for film in films %}
+      {% if film.genre_id == genre.genre_id %}
+      <div class="col">
+        <div class="card h-100 border-0 pe-auto" redirect_to="{% url 'details' film.id %}">
+          <img src="{{ film.thumb.url }}" class="card-img-top rounded-0" style="height: 200px;">
+          <div class="card-body bg-light">
+            <h6>{{ film.name }}</h6>
           </div>
         </div>
-        {% endif %}
-        {% endfor %}
-  
       </div>
-      <div class="mb-5"></div> <!-- seprator -->
+      {% endif %}
       {% endfor %}
 
     </div>
+    <div class="mb-5"></div> <!-- separator -->
+    {% endfor %} 
+
   </div>
+</div>
+
+{% include "footer.html" %} <!-- Footer-->
+{% endblock %} <!-- End content -->
 
 
-  <!-- Footer-->
-  {% include "footer.html" %}
-  
 
+{% block script %}<!-- Start script -->
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#selectGenre").on("change", function(e){
+      const genre = $("option:selected", this).val();
+      const newUrl = window.location.origin + `{% url 'browse' %}?genre=${genre}`; 
+      window.location.href = newUrl;
+    });
 
-
-  <!-- include jquery js -->
-  <script src="{% static 'jquery/jquery.js' %}"></script>
-  <!-- include bootstrap js -->
-  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-      $("#selectGenre").on("change", function(e){
-        const genre = $("option:selected", this).val();
-        const newUrl = window.location.origin + `{% url 'browse' %}?genre=${genre}`; 
-        window.location.href = newUrl;
-      });
-
-      $(".card").on("click", function(e){
-        const newUrl = $(this).attr("redirect_to");
-        window.location.href = newUrl;
-      });
-      
+    $(".card").on("click", function(e){
+      const newUrl = $(this).attr("redirect_to");
+      window.location.href = newUrl;
     });
     
-  </script>
-</body>
-</html>
+  });
+</script>
+{% endblock %}<!-- End script -->

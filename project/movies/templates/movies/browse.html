@@ -1,29 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Movies</title>
+{% extends 'base.html' %}
 
-  {% load static %}  
-  <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-  <style>
-    .card { 
-      transition: all .2s ease-in-out; 
-    }
-    .card:hover { 
-      cursor: pointer; 
-      transform: scale(1.05); 
-    }
-  </style>
-</head>
-<body>
+{% block title %}Browse{% endblock %}
 
-  <!-- Navbar -->
-  {% include "navbar.html" %}
+{% block style %} <!-- Start style -->
+<style>
+  .card { 
+    transition: all .2s ease-in-out; 
+  }
+  .card:hover { 
+    cursor: pointer; 
+    transform: scale(1.05); 
+  }
+</style>
+{% endblock %}<!-- End style -->
 
-  <!-- Content -->
+{% block content %}<!-- Start content -->
+{% include "navbar.html" %} <!-- Navbar -->
+  
   <div class="container-fluid p-5">
     <div class="container-fluid p-5">
 
@@ -31,22 +24,12 @@
       <div class="border-bottom">
         <h1 class="display-6" style="font-size: 2rem;">{{ genre }}</h1>
       </div>
-      <div class="mb-5"></div> <!-- seprator -->
+      
+      <div class="mb-5"></div> <!-- separator -->
       
       {% elif search %}
-      
       {% include "alert.html" %}
-
-      <!-- <div class="alert alert-info">
-        {% if films %}
-          {{ films|length }} Risultati per <b>{{ search }}</b>
-        {% else %}
-          Nessun risultato <b>{{ search }}</b>
-        {% endif %}
-      </div> -->
       {% endif %}
-
-
 
       {% if films %}
       <div class="row row-cols-1 row-cols-md-6">
@@ -61,32 +44,23 @@
         </div>
         {% endfor %}
       </div>
-      <div class="mb-5"></div> <!-- seprator -->
+      <div class="mb-5"></div> <!-- separator -->
       {% endif %}
     </div>
   </div>
 
-
-  <!-- Footer-->
-  {% include "footer.html" %}
-  
+{% include "footer.html" %} <!-- Footer-->
+{% endblock %} <!-- End content -->
 
 
-
-  <!-- include jquery js -->
-  <script src="{% static 'jquery/jquery.js' %}"></script>
-  <!-- include bootstrap js -->
-  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-    
-  <script type="text/javascript">
-    $(document).ready(function(){
-      $(".card").on("click", function(e){
-        const newUrl = $(this).attr("redirect_to");
-        window.location.href = newUrl;
-      });
-      
+{% block script %}<!-- Start script -->
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".card").on("click", function(e){
+      const newUrl = $(this).attr("redirect_to");
+      window.location.href = newUrl;
     });
     
-  </script>
-</body>
-</html>
+  });
+</script>
+{% endblock %}<!-- End script -->

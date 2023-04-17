@@ -1,69 +1,55 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Registrati</title>
+{% extends 'base.html' %}
 
-  {% load static %}  
-  <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-</head>
+{% block title %}Registrati{% endblock %}
 
-<body>
-  <!-- Navbar -->
-  {% include "navbar.html" %}
+{% block content %}<!-- Start content -->
+{% include "navbar.html" %} <!-- Navbar -->
 
-  <div class="mb-5"></div><!-- separator -->
-  <div class="container w-50 pt-5">
-    {% include "alert.html" %}
-      
-    <h4>Registrati</h4>
-    <form action="{% url 'signup' %}" method="POST">
-      {% csrf_token %}
-      <div class="form-floating">
-        <input type="email" id="email" class="form-control" name="email" value="simone@gmail.com">
-        <label>Email</label>
-      </div>
-      <div class="mb-3"></div> <!-- separator -->
-      <div class="form-floating">
-        <input type="password" id="password-1" class="form-control" name="password" value="password" minlength="8" maxlength="12">
-        <label>Password</label>
-      </div>
-      <div class="mb-3"></div> <!-- separator -->
-      <div class="form-floating">
-        <input type="password" id="password-2" class="form-control" value="password" minlength="8" maxlength="12">
-        <label>Ripeti password</label>
-      </div>
+<div class="container w-50 pt-5">
+  {% include "alert.html" %}
+    
+  <h4>Registrati</h4>
+  <form action="{% url 'signup' %}" method="POST">
+    {% csrf_token %}
+    <div class="form-floating">
+      <input type="email" id="email" class="form-control" name="email" value="simone@gmail.com">
+      <label>Email</label>
+    </div>
+    <div class="mb-3"></div> <!-- separator -->
+    <div class="form-floating">
+      <input type="password" id="password-1" class="form-control" name="password" value="password" minlength="8" maxlength="12">
+      <label>Password</label>
+    </div>
+    <div class="mb-3"></div> <!-- separator -->
+    <div class="form-floating">
+      <input type="password" id="password-2" class="form-control" value="password" minlength="8" maxlength="12">
+      <label>Ripeti password</label>
+    </div>
 
-      <div class="mb-3"></div> <!-- separator -->
-      <div class="d-flex justify-content-between">
-        <button class="btn btn-primary rounded-0" type="submit">Registrati</button>
-        <small class="mt-auto">Hai già un account? <a href="{% url 'login' %}">Accedi</a></small>
-      </div>
-    </form>
-  </div>
+    <div class="mb-3"></div> <!-- separator -->
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-primary rounded-0" type="submit">Registrati</button>
+      <small class="mt-auto">Hai già un account? <a href="{% url 'login' %}">Accedi</a></small>
+    </div>
+  </form>
+</div>
+{% endblock %} <!-- End content -->
 
-
-  <!-- include jquery js -->
-  <script src="{% static 'jquery/jquery.js' %}"></script>
-  <!-- include bootstrap js -->
-  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-
-  <script type="text/javascript">
-    $(document).ready(function(){
-      $("form").submit(function(e){
-        var password1 = $("#password-1");
-        var password2 = $("#password-2");
-        if(password1.val() !== password2.val())
-        {
-          alert("ripetere la password");
-          password1.val("");
-          password2.val("");
-          return false;
-        }
-        return true;
-      });
+{% block script %}<!-- Start script -->
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("form").submit(function(e){
+      var password1 = $("#password-1");
+      var password2 = $("#password-2");
+      if(password1.val() !== password2.val())
+      {
+        alert("ripetere la password");
+        password1.val("");
+        password2.val("");
+        return false;
+      }
+      return true;
     });
-  </script>
-</body>
-</html>
+  });
+</script>
+{% endblock %}<!-- End script -->
