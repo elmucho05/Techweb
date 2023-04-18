@@ -1,64 +1,81 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.contrib import messages
 from django.utils.safestring import mark_safe
-from .models import Film, TVSerie
+from .models import Film, TVSerie, Title
 
 def home(request):
-  pass
-
+  titles = Title.objects.all()
+  genres = titles.values("genre_id").distinct()
+  context = {
+    "titles" : titles,
+    "genres" : genres,
+  }
+  return render(request, "movies/home.html", context) 
 
 
 def view_films(request):
-  films = Film.objects.all().order_by("genre_id")
-  genres = films.values("genre_id").distinct()
+  titles = Title.objects.filter(type='film')
+  genres = titles.values("genre_id").distinct()
   context = {
+    "titles" : titles,
     "genres" : genres,
-    "films" : films,
   }
   return render(request, "movies/home.html", context) 
 
-def view_tvseries(request):
-  tvseries = TVSerie.objects.all().order_by('genre_id')
-  genres = tvseries.values("genre_id").distinct()
-  
+def view_series(request):
+  titles = Title.objects.filter(type='serie')
+  genres = titles.values("genre_id").distinct()
   context = {
+    "titles" : titles,
     "genres" : genres,
-    "tvseries" : tvseries,
   }
   return render(request, "movies/home.html", context) 
+
+
+
+
 
 def view_browse(request):
   genre  = request.GET.get("genre", None)
   search = request.GET.get("search", None)
+  titles = []
 
-  films = []
-
-  if genre:
-    films = Film.objects.filter(genre=genre)
-  elif search:
-    films = Film.objects.filter(name__icontains=search)
-    messages.info(request, mark_safe(f'{len(films)} risultati per <b>{search}</b>'))
-
+  if search:
+    titles = Title.objects.filter(name__icontains=search)
+    messages.info(request, mark_safe(f'{len(titles)} risultati per <b>{search}</b>'))
+  elif genre:
+    titles = titles.objects.filter(genre=genre, type=type)
+    
   context = {
     "genre" : genre,
     "search" : search,
-    "films" : films,
+    "titles" : titles,
   }
   return render(request, "movies/browse.html", context) 
 
-def view_film_details(request, film_id):
-  title = Film.objects.get(id=film_id)
-  context = { 
-    "title" : title,
-    "type" : "film"
-  }
-  return render(request, "movies/details.html", context) 
+def view_details(request, id):
+  title = Title.objects.get(id=id)
+  film  = None
+  serie = None
 
-def view_tvserie_details(request):
-  title = Film.objects.get(id=film_id)
-  context = { 
-    "title" : title,
-    "type" : "film"
-  }
-  return render(request, "movies/details.html", context) 
+  if title.type == 'film':
+    film  = Film.objects.get(title_id=id) 
+  else:
+    serie = TVSerie.objects.get(title_id=id)
 
+  context = { 
+    "title" : title, 
+    "film"  : film,
+    "serie" : serie,
+  }
+  return render(request, "movies/details.html", context)
+
+
+def view_watch(request, id):
+  type   = request.GET.get('type', None)
+  season = request.GET.get('season', None)
+  ep     = request.GET.get('episode', None)
+
+
+
+  return HttpResponse("hello world")
