@@ -94,13 +94,13 @@ la class Episode rappresenta un oggetto di tipo episodio
 - tv          riferimento alla serie tv
 - video       riferimento al video
 """
-# class Episode(models.Model):
-#   name_ep     = models.CharField(max_length=50, default=None)
-#   num_ep      = models.IntegerField()
-#   num_season  = models.IntegerField()
-#   tv          = models.ForeignKey(TVSerie, on_delete=models.CASCADE)
-#   video       = models.ForeignKey(Video, null=True, on_delete=models.SET_NULL)
-#   def __str__(self) -> str:
-#     return f'Episodio {self.id_ep}'
+class Episode(models.Model):
+  name_ep     = models.CharField(max_length=50, default=None)
+  num_ep      = models.IntegerField()
+  num_season  = models.IntegerField()
+  serie       = models.ForeignKey(TVSerie, on_delete=models.CASCADE)
+  video       = models.ForeignKey(Video, null=True, on_delete=models.SET_NULL)
+  def __str__(self) -> str:
+    return f'S{self.num_season} E{self.num_ep} {self.name_ep}'
   
 

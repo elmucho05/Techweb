@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Watch{% endblock %}
+
+{% block style %}
+<link href="https://vjs.zencdn.net/8.0.4/video-js.css" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}<!-- Start content -->
+{% load static %}
+<div class="container-fluid p-0" style="height: 100vh; width: 100vw;">
+  <video
+      id="{{ video.id }}"
+      class="video-js w-100 h-100"
+      controls
+      preload="auto"
+      poster=""
+      data-setup="{}">
+      <source src="{{ video.src.url }}"  type="video/mp4"/>
+      </video>
+</div>
+{% endblock %}<!-- End content -->
+
+
+
+{% block script %}
+<script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
+{% endblock %}

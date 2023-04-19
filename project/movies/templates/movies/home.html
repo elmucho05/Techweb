@@ -23,30 +23,21 @@
 
     {% include "alert.html" with dismiss=True %}
 
-    {% if section %}
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">{{ section.type }}</li>
-        <li class="breadcrumb-item active" aria-current="page">{{ section.genre }}</li>
-      </ol>
-    </nav>
-    {% endif %}
-
     <select class="form-select rounded-0" id="selectGenre" style="width: 12rem;">
       <option selected>Generi</option>
       {% for genre in genres %}
       <option value="{{ genre.genre_id }}">{{ genre.genre_id }}</option>
       {% endfor %}
     </select>
-
     <div class="mb-5"></div> <!-- seprator -->
 
     {% for genre in genres %}
-    <div class="border-bottom">
+    <div>
+      <h1 class="display-6 d-inline" style="font-size: 2rem;">{{ section }}</h1>
       <h1 class="display-6 d-inline" style="font-size: 2rem;">{{ genre.genre_id }}</h1>
-      <a href="#" class="d-inline px-3 text-decoration-none">sfoglia tutti</a>
+      <a href="{% url 'view_browse' %}?genre={{ genre.genre_id }}" class="d-inline px-3 text-decoration-none">sfoglia tutti</a>
+      <hr>
     </div>
-    <div class="mb-3"></div> <!-- seprator -->
 
     <div class="row row-cols-1 row-cols-md-6">
       {% if titles %}
