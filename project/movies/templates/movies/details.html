@@ -2,78 +2,85 @@
 
 {% block title %}Details{% endblock %}
 
-{% block style %}
-<link href="https://vjs.zencdn.net/8.0.4/video-js.css" rel="stylesheet" />
-{% endblock %}
-
 {% block content %}<!-- Start content -->
 {% include "navbar.html" %}<!-- Navbar -->
 
 <div class="container py-5">
-  <h1>{{ film.name }}</h1>
-  <hr>
-  
-  <div class="mb-5"></div> <!-- separator -->
+  <h1>{{ title.name }}</h1>
 
-  <div class="card border-0">
-    <div class="row g-0">
-      <div class="col-md-4">
-        <video
-          id="{{ film.name }}"
-          class="video-js w-100 h-100"
-          controls
-          preload="auto"
-          poster="{{ film.thumb.url }}"
-          data-setup="{}">
-        <source src="{{ film.videosrc.url }}"  type="video/mp4" />
-      </video>
-      </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-2">Descrizione:</div>
-            <div class="col-10">{{ film.description }}</div>
+  <ul class="list-group">
+    <li class="list-group-item px-0  border-0">{{ title.release_date }}</li>
+    <li class="list-group-item px-0  border-0">{{ title.genre }}</li>
+
+    {% if title.type == "film" %}
+    <li class="list-group-item px-0  border-0">{{ film.director }}</li>
+    {% endif %}
+
+    {% if title.type == "serie" %}
+    <li class="list-group-item px-0  border-0">{{ serie.seasons }} stagioni</li>
+    {% endif %}
+
+    <li class="list-group-item px-0  border-0"><p>{{ title.description }}</p></li>
+
+    {% load static %}
+    <li class="list-group-item px-0 border-0">
+      <img src="{% get_media_prefix %}thumbs/{{ title.thumb }}" style="height: 200px;">
+    </li>
+
+    {% if title.type == "film" %}
+    <li class="list-group-item px-0  border-0">
+      <a class="btn btn-primary" href="{% url 'view_watch' film.video.id %}" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+          <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
+        </svg>
+        guarda ora
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+
+    {% if title.type == "serie" %}
+    <div class="accordion" id="accordionSeasons">
+
+      {% for season in seasons_range %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{season}}">
+          <button class="accordion-button" 
+                  type="button" 
+                  data-bs-toggle="collapse" 
+                  data-bs-target="#collapse{{season}}" 
+                  aria-expanded="true" 
+                  aria-controls="collapse{{season}}">
+            Stagione {{ season }}
+          </button>
+        </h2>
+        <div id="collapse{{season}}" class="accordion-collapse collapse show" aria-labelledby="heading{{season}}" data-bs-parent="#accordionSeason">
+          <div class="accordion-body">
+            <ul class="list-group">
+              {% for ep in episodes %}
+              {% if ep.num_season == season %}
+              <li class="list-group-item border-0">
+                <a  href="{% url 'view_watch' ep.video.id %}" 
+                    class="text-decoration-none" 
+                    target="_blank" 
+                    rel="noopener noreferrer">{{ ep }}</a>
+              </li>
+              {% endif %}
+              {% endfor %}
+            </ul>
+            
           </div>
-          <div class="mb-3"></div> <!-- separator -->
-
-          <div class="row">
-            <div class="col-2">Uscita:</div>
-            <div class="col-10">{{ film.release_date }}</div>
-          </div>
-          <div class="mb-3"></div> <!-- separator -->
-
-          <div class="row">
-            <div class="col-2">Durata:</div>
-            <div class="col-10">{{ film.duration }} min</div>
-          </div>
-          <div class="mb-3"></div> <!-- separator -->
-
-          <div class="row">
-            <div class="col-2">Regista:</div>
-            <div class="col-10">{{ film.director }}</div>
-          </div>
-          <div class="mb-3"></div> <!-- separator -->
-
-          <div class="row">
-            <div class="col-2">Genere:</div>
-            <div class="col-10">{{ film.genre }}</div>
-          </div>
-          <div class="mb-3"></div> <!-- separator -->
-
         </div>
       </div>
+      {% endfor %}
+
     </div>
-  </div>
-  
-  <div class="mb-3"></div> <!-- separator -->
+    {% endif %}
+    
 </div>
 
 
 {% include "footer.html" %}<!-- Footer-->
 {% endblock %}<!-- End content -->
 
-
-
-{% block script %}
-<script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
-{% endblock %}

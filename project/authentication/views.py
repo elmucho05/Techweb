@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 from user.models import User
 
-def login(request):
+def view_login(request):
   if request.method == "POST":
     email  = request.POST.get("email")
     plain_password = request.POST.get("password")
@@ -32,7 +32,7 @@ def login(request):
 
   return render(request, "authentication/login.html")
 
-def signup(request):
+def view_signup(request):
   if request.method == "POST":
     email = request.POST.get("email")
     plain_password = request.POST.get("password")

@@ -20,32 +20,31 @@
   <div class="container-fluid p-5">
     <div class="container-fluid p-5">
 
-      {% if genre %}
-      <div class="border-bottom">
-        <h1 class="display-6" style="font-size: 2rem;">{{ genre }}</h1>
-      </div>
-      
-      <div class="mb-5"></div> <!-- separator -->
-      
-      {% elif search %}
-      {% include "alert.html" %}
-      {% endif %}
+      {% if search %} {% include "alert.html" %} {% endif %}
 
-      {% if films %}
+      <h1 class="display-6" style="font-size: 2rem;">
+        {% if genre %}{{ genre }}{% endif %}
+        {% if section == 'film' %}Film{% endif %}
+        {% if section == 'serie' %}Serie TV{% endif %}
+      </h1>
+      <hr>
+
+      {% if titles %}
+      {% load static %}
       <div class="row row-cols-1 row-cols-md-6">
-        {% for film in films %}
+        {% for title in titles %}
         <div class="col">
-          <div class="card h-100 border-0 pe-auto" redirect_to="{% url 'details' film.id %}">
-            <img src="{{ film.thumb.url }}" class="card-img-top rounded-0" style="height: 200px;">
+          <div class="card h-100 border-0 pe-auto" redirect_to="{% url 'view_details' title.id %}">
+            <img src="{% get_media_prefix %}thumbs/{{ title.thumb }}" class="card-img-top rounded-0" style="height: 200px;">
             <div class="card-body bg-light">
-              <h6>{{ film.name }}</h6>
+              <h6>{{ title.name }}</h6>
             </div>
           </div>
         </div>
         {% endfor %}
       </div>
-      <div class="mb-5"></div> <!-- separator -->
       {% endif %}
+
     </div>
   </div>
 
@@ -60,7 +59,6 @@
       const newUrl = $(this).attr("redirect_to");
       window.location.href = newUrl;
     });
-    
   });
 </script>
 {% endblock %}<!-- End script -->

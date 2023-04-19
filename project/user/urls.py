@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns = [
   # http://127.0.0.1:8000/user/<uid>/profile/
-  path('profile', views.profile, name="profile"),
+  path('profile', views.view_profile, name="view_profile"),
 ]

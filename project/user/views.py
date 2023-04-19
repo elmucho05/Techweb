@@ -3,7 +3,7 @@ from django.http import HttpResponseBadRequest
 
 from .models import User
 
-def profile(request, uid):
+def view_profile(request, uid):
   try:
     user = User.objects.get(id=uid)
   except:

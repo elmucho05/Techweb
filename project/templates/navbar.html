@@ -8,11 +8,11 @@
     <div class="collapse navbar-collapse ">
       <ul class="navbar-nav me-auto mb-2 ml-2 mb-lg-0 ">
         <li class="nav-item">
-          <a class="nav-link active" href="#">Film</a>
+          <a class="nav-link active" href="{% url 'view_browse' %}?section=film">Film</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Serie TV</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'view_browse' %}?section=serie">Serie TV</a>
         </li>
       </ul>
       
@@ -37,10 +37,10 @@
           </a>
           <ul class="dropdown-menu rounded-0" aria-labelledby="navbarDropdown">
             {% if not request.session.user_email %}
-              <li><a class="dropdown-item" href="{% url 'login' %}">Accedi</a></li>
-              <li><a class="dropdown-item" href="{% url 'signup' %}">Registrati</a></li>
+              <li><a class="dropdown-item" href="{% url 'view_login' %}">Accedi</a></li>
+              <li><a class="dropdown-item" href="{% url 'view_signup' %}">Registrati</a></li>
             {% else %}
-              <li><a class="dropdown-item py-0" href="{% url 'profile' request.session.user_id %}">Il tuo profilo</a></li>
+              <li><a class="dropdown-item py-0" href="{% url 'view_profile' request.session.user_id %}">Il tuo profilo</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item py-0" href="{% url 'logout' %}">Esci</a></li>
             {% endif %}
@@ -48,7 +48,7 @@
         </li>
       </ul>
 
-      <form class="d-flex" action="{% url 'browse' %}" method="GET">
+      <form class="d-flex" action="{% url 'view_browse' %}" method="GET">
         <div class="input-group input-group-sm">
           <div class="input-group-prepend">
             <span class="input-group-text bg-transparent rounded-0">
