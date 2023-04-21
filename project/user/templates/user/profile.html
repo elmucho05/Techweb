@@ -12,33 +12,14 @@
 
 
 {% block content %}<!-- Start content -->
+{% include 'navbar.html' %}
+{% load static %}
 <div class="container-fluid">
   <div class="row">
     <!-- Start sidebar -->
-    <div id="sidebar" class="col-lg-2 d-flex flex-column flex-shrink-0 p-3 bg-light vh-100">
-      <div class="dropdown"><!-- dropdown user -->
-        <a  href="#" 
-            class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" 
-            id="dropdownUser" 
-            data-bs-toggle="dropdown" 
-            aria-expanded="false">
-          
-          {% load static %}
-          <img {% if user.avatar %}src="{{ user.avatar.url }}" {% else %}src="{% get_media_prefix %}avatars/default.jpg" {% endif %}
-            class="rounded-circle me-2" 
-            width="32" 
-            height="32">
-          
-          <small>{{ user.email }}</small>
-        </a>
-  
-        <ul class="dropdown-menu" aria-labelledby="dropdownUser">
-          <li><a class="dropdown-item" href="{% url 'logout' %}">Esci</a></li>
-        </ul>
-      </div> <!-- End dropdown -->
-      <hr>
+    <div id="sidebar" class="col-lg-2 d-flex flex-column flex-shrink-0 p-5 h-100">
       <ul class="nav nav-pills flex-column mb-auto"> 
-        <li class="nav-item"> <!-- start home item -->
+        <li class="nav-item border-bottom py-2"> <!-- start home item -->
           <a href="{% url 'home' %}" class="nav-link" aria-current="page">
             <svg  xmlns="http://www.w3.org/2000/svg" 
                   width="20" 
@@ -51,13 +32,44 @@
             Home
           </a>
         </li> <!-- end home item -->
+
+        <li class="nav-item border-bottom py-2"> <!-- start avatar item -->
+          <a href="#sectionAvatar" class="nav-link" aria-current="page">
+            <svg  xmlns="http://www.w3.org/2000/svg" 
+                  width="20" 
+                  height="20" 
+                  fill="currentColor" 
+                  class="bi bi-person-bounding-box" 
+                  viewBox="0 0 16 16">
+              <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"/>
+              <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+            </svg>
+            Avatar</a>
+        </li><!-- end avatar item -->
+
+        <li class="nav-item border-bottom py-2"> <!-- start sicurezza item -->
+          <a href="#sectionSecurity" class="nav-link" aria-current="page">
+            <svg  xmlns="http://www.w3.org/2000/svg" 
+                  width="20" 
+                  height="20" 
+                  fill="currentColor" 
+                  class="bi bi-key" 
+                  viewBox="0 0 16 16">
+              <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8zm4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5z"/>
+              <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg>
+
+            Sicurezza</a>
+        </li><!-- end sicurezza item -->
+
       </ul> 
     </div><!-- End sidebar -->
     
-    <div class="col-lg-10">
+    <div class="col-lg-10 border-start">
       <div class="container py-5">
-        
-        <div class="card border-0" style="max-width: 540px;"><!-- Start avatar card  -->
+        {% include 'alert.html' %}
+
+        <div id="sectionAvatar" class="card border-0" style="max-width: 540px;"><!-- Start avatar card  -->
           <h4>Immagine profilo</h4>
           <div class="row g-0"> <!-- image -->
             <div class="col-md-4">
@@ -76,9 +88,10 @@
             </div>
           </div>
         </div><!-- End avatar card -->
-        <hr>
+        
+        <div class="mb-5"></div><hr><div class="mb-5"></div>
 
-        <div class="card border-0">
+        <div class="card border-0"> <!-- Start i tuoi dati-->
           <div class="card-body">
             <h4 class="card-title">I tuoi dati</h4>
             <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
@@ -86,7 +99,28 @@
             <a href="#" class="card-link">Card link</a>
             <a href="#" class="card-link">Another link</a>
           </div>
-        </div>
+        </div><!-- End i tuoi dati-->
+        
+        <div class="mb-5"></div><hr><div class="mb-5"></div>
+
+        <div id="sectionSecurity" class="card border-0"> <!-- Start aggiorna password -->
+          <div class="card-body">
+            <h4 class="card-title">Aggiorna password</h4>
+            <form action="{% url 'view_update_user_password' user.id %}" method="post">
+              {% csrf_token %}
+              <label class="form-label">La tua password</label>
+              <input name="old-password" type="password" class="form-control">
+              <label class="form-label">La nuova password</label>
+              <input name="new-password" type="password" class="form-control">
+              <label class="form-label">Conferma password</label>
+              <input type="password" class="form-control">
+              <button class="btn btn-primary mt-3" type="submit">Conferma</button>
+            </form>
+          </div>
+        </div><!-- End aggiorna password -->
+        
+        <div class="mb-5"></div><hr><div class="mb-5"></div>
+
 
       </div>
     </div>
