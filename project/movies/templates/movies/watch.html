@@ -7,18 +7,23 @@
 {% endblock %}
 
 {% block content %}<!-- Start content -->
-{% load static %}
-<div class="container-fluid p-0" style="height: 100vh; width: 100vw;">
-  <video
-      id="{{ video.id }}"
-      class="video-js w-100 h-100"
-      controls
-      preload="auto"
-      poster=""
-      data-setup="{}">
-      <source src="{{ video.src.url }}"  type="video/mp4"/>
-      </video>
-</div>
+
+  {% if not is_authorized %}
+    {% include 'alert.html' %}
+  {% else %}
+    {% load static %}
+    <div class="container-fluid p-0" style="height: 100vh; width: 100vw;">
+      <video
+          id="{{ video.id }}"
+          class="video-js w-100 h-100"
+          controls
+          preload="auto"
+          poster=""
+          data-setup="{}">
+          <source src="{{ video.src.url }}"  type="video/mp4"/>
+        </video>
+    </div>
+    {% endif %}
 {% endblock %}<!-- End content -->
 
 

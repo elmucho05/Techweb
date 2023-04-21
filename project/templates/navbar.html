@@ -36,13 +36,13 @@
             
           </a>
           <ul class="dropdown-menu rounded-0" aria-labelledby="navbarDropdown">
-            {% if not request.session.user_email %}
-              <li><a class="dropdown-item" href="{% url 'view_login' %}">Accedi</a></li>
-              <li><a class="dropdown-item" href="{% url 'view_signup' %}">Registrati</a></li>
-            {% else %}
+            {% if request.session.user_id %}
               <li><a class="dropdown-item py-0" href="{% url 'view_profile' request.session.user_id %}">Il tuo profilo</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item py-0" href="{% url 'logout' %}">Esci</a></li>
+              <li><a class="dropdown-item py-0" href="{% url 'logout' %}">Esci</a></li>  
+            {% else %}
+              <li><a class="dropdown-item" href="{% url 'view_login' %}">Accedi</a></li>
+              <li><a class="dropdown-item" href="{% url 'view_signup' %}">Registrati</a></li>
             {% endif %}
           </ul>
         </li>

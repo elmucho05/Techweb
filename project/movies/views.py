@@ -69,5 +69,9 @@ def view_watch(request, video_id):
   except:
     return HttpResponseNotFound("video non trovato")
 
-  context = { "video" : video }
+  context = { 
+    "video" : video,
+    "is_authorized" : True,
+  }
+  messages.error(request, "Il servizio è disponibile solo per gli abbonati!")
   return render(request, 'movies/watch.html', context)
