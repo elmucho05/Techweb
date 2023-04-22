@@ -20,19 +20,19 @@
   <div class="container-fluid p-5">
     <div class="container-fluid p-5">
 
-      {% if search %} {% include "alert.html" %} {% endif %}
+      {% if browse_search %} {% include "alert.html" %} {% endif %}
 
       <h1 class="display-6" style="font-size: 2rem;">
-        {% if genre %}{{ genre }}{% endif %}
-        {% if section == 'film' %}Film{% endif %}
-        {% if section == 'serie' %}Serie TV{% endif %}
+        {% if browse_genre %}{{ browse_genre }}{% endif %}
+        {% if browse_section == 'film' %}Film{% endif %}
+        {% if browse_section == 'serie' %}Serie TV{% endif %}
       </h1>
       <hr>
 
-      {% if titles %}
+      {% if browse_titles %}
       {% load static %}
       <div class="row row-cols-1 row-cols-md-6">
-        {% for title in titles %}
+        {% for title in browse_titles %}
         <div class="col">
           <div class="card h-100 border-0 pe-auto" redirect_to="{% url 'view_details' title.id %}">
             <img src="{% get_media_prefix %}thumbs/{{ title.thumb }}" class="card-img-top rounded-0" style="height: 200px;">
