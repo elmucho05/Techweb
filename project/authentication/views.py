@@ -1,62 +1,54 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views import View
-from django.contrib.auth.hashers import make_password, check_password
-from django.db import IntegrityError
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-
-# from user.models import User
-# from user.session import set_user_session_avatar_url, set_user_session_email, set_user_session_id, flush_user_session
-
+from .forms import RegistrationForm
 
 class ViewLogin(View):
-  template_name = "authentication/login.html"
+  form = AuthenticationForm()
+  context = { 'form': form }
 
   def get(self, request):
-    return render(request, self.template_name)
+    print(request.get_full_path())
+    return render(request, "authentication/login.html", self.context)
 
   def post(self, request):
-    email    = request.POST.get("email")
-    password = request.POST.get("password")
-    print(email, password)
-
-    user = authenticate(email=email, password=password)
-
-    redirect_to = 'home'
-    if user:
+    self.form = AuthenticationForm(request.POST, data=request.POST)
+    username = self.form.data.get('username')
+    password = self.form.data.get('password')
+    user = authenticate(username=username, password=password)
+    if user is not None:
       login(request, user)
+      
+      #?redirect_to=/u/7/profile
+      redirect_to = request.GET.get('redirect_to', 'view_browse')
       messages.success(request, f'Login completato con successo')
-    else:
-      redirect_to = 'view_login'
-      messages.error(request, f'Username o password errati')
-    return redirect(redirect_to)
-
-
+      return redirect(redirect_to)
+    
+    messages.error(request, f'Username o password errati')
+    return redirect('view_login')
 
 class ViewSignUp(View):
+  form = RegistrationForm()
+  context = { 'form': form }
+
   def get(self, request):
-    return render(request, "authentication/signup.html")
+    return render(request, "authentication/signup.html", self.context)
 
   def post(self, request):
-    email    = request.POST.get("email")
-    username = request.POST.get("username")
-    password = request.POST.get("password")
+    self.form = RegistrationForm(request.POST)
 
-    redirect_to = "home"
-    try:
-      user = User.objects.create_user("john", "lennon@thebeatles.com", "johnpassword")
+    if self.form.is_valid():
+      self.form.save()
       messages.success(request, f'Registrazione completata!') 
-    except Exception as e:
-      redirect_to = "view_signup"
-      messages.error(request, f'{str(e)}')
-
-    return redirect(redirect_to)
+      return redirect('view_browse')
+    
+    return redirect('view_signup')
 
 
-def logout(request):
-  #request.session.flush()
-  return redirect("home")
+def view_logout(request):
+  logout(request)
+  return redirect("view_browse")
   

@@ -19,27 +19,16 @@
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" href="#">
-            
-            <!-- user icon -->
-            {% if request.session.user_avatar_url %}
-              <img src="{% get_media_prefix %}{{ request.session.user_avatar_url }}" class="rounded-pill" style="width: 32px; height: 32px;">
-            {% else %}
-              <img src="{% get_media_prefix %}avatars/default.jpg" class="rounded-pill" style="width: 32px; height: 32px;">
-            {% endif %}
-
-            {% if request.session.user_email %}
-              <small>{{ request.session.user_email }}</small>  
-            {% else %}
-              <small>Guest</small>  
-            {% endif %}
-            <!--------------->
+          <small>{% if request.user.is_authenticated %} {{ request.user.username }}{% else %}Guest{% endif %}</small>
             
           </a>
           <ul class="dropdown-menu rounded-0" aria-labelledby="navbarDropdown">
-            {% if request.session.user_id %}
-              <li><a class="dropdown-item py-0" href="{% url 'view_profile' request.session.user_id %}">Il tuo profilo</a></li>
+            {% if request.user.is_authenticated %}
+              <li><a class="dropdown-item py-0" 
+                href="{% if user.is_superuser %}/admin/{% else %} {% url 'view_profile' request.user.id %} {% endif %} ">
+                Il tuo profilo</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item py-0" href="{% url 'logout' %}">Esci</a></li>  
+              <li><a class="dropdown-item py-0" href="{% url 'view_logout' %}">Esci</a></li>  
             {% else %}
               <li><a class="dropdown-item" href="{% url 'view_login' %}">Accedi</a></li>
               <li><a class="dropdown-item" href="{% url 'view_signup' %}">Registrati</a></li>

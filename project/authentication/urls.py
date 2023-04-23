@@ -10,5 +10,5 @@ urlpatterns = [
   path("sign-up/", views.ViewSignUp.as_view(), name="view_signup"),
 
   # http://127.0.0.1:8000/authentication/logout
-  path("logout/", views.logout, name="logout"),
+  path("logout/", views.view_logout, name="view_logout"),
 ]
