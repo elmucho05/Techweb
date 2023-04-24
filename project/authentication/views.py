@@ -3,15 +3,16 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views import View
+from django.utils.html import strip_tags
 
 from .forms import RegistrationForm
+from profile.models import UserProfile
 
 class ViewLogin(View):
   form = AuthenticationForm()
   context = { 'form': form }
 
   def get(self, request):
-    print(request.get_full_path())
     return render(request, "authentication/login.html", self.context)
 
   def post(self, request):
@@ -22,12 +23,14 @@ class ViewLogin(View):
     if user is not None:
       login(request, user)
       
-      #?redirect_to=/u/7/profile
+      #?redirect_to=/profile/
       redirect_to = request.GET.get('redirect_to', 'view_browse')
       messages.success(request, f'Login completato con successo')
       return redirect(redirect_to)
+    else:
+      for e in self.form.errors.values():
+        messages.error(request, f'{strip_tags(e)}')
     
-    messages.error(request, f'Username o password errati')
     return redirect('view_login')
 
 class ViewSignUp(View):
@@ -41,12 +44,13 @@ class ViewSignUp(View):
     self.form = RegistrationForm(request.POST)
 
     if self.form.is_valid():
-      self.form.save()
+      user = self.form.save()
+      UserProfile.objects.create(user=user, avatar=None)
+      login(request, user)
       messages.success(request, f'Registrazione completata!') 
       return redirect('view_browse')
     
     return redirect('view_signup')
-
 
 def view_logout(request):
   logout(request)

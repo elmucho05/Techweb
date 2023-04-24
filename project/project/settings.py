@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'movies',
     'authentication',
     'profile',
-    'tests',
 
     'crispy_forms',
     'crispy_bootstrap5',

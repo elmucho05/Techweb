@@ -24,8 +24,6 @@ urlpatterns = [
 	path('admin/',          admin.site.urls),
     path('',                include('movies.urls')),
     path('authentication/', include('authentication.urls')),
-    path('u/<int:uid>/',    include('profile.urls')),
-
-    path('tests/',          include('tests.urls')),
+    path('profile/',        include('profile.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

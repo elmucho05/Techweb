@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseNotFound
 from django.contrib import messages
 from django.utils.safestring import mark_safe
@@ -61,7 +61,7 @@ def view_browse(request):
   return home(request)
 
 def view_details(request, title_id):
-  title = Title.objects.get(id=title_id)
+  title = get_object_or_404(Title, id=title_id)
   film  = None
   serie = None
   episodes = []
@@ -84,11 +84,7 @@ def view_details(request, title_id):
   return render(request, "movies/details.html", context)
 
 def view_watch(request, video_id):
-  try:
-    video = Video.objects.get(id=video_id)
-  except:
-    return HttpResponseNotFound("video non trovato")
-
+  video = get_object_or_404(Video, id=video_id)
   context = { 
     "video" : video,
     "is_authorized" : True,

@@ -8,7 +8,7 @@ class UserProfile(models.Model):
     validators=[FileExtensionValidator(allowed_extensions=['jpg','png','svg'])])
 
   def __str__(self) -> str:
-    return self.user
+    return self.user.username
 
 
 

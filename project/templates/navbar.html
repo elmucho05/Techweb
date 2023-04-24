@@ -25,7 +25,7 @@
           <ul class="dropdown-menu rounded-0" aria-labelledby="navbarDropdown">
             {% if request.user.is_authenticated %}
               <li><a class="dropdown-item py-0" 
-                href="{% if user.is_superuser %}/admin/{% else %} {% url 'view_profile' request.user.id %} {% endif %} ">
+                href="{% if user.is_superuser %}/admin/{% else %} {% url 'view_profile' %} {% endif %} ">
                 Il tuo profilo</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item py-0" href="{% url 'view_logout' %}">Esci</a></li>  
