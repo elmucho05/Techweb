@@ -23,6 +23,7 @@ class Video(models.Model):
   def __str__(self) -> str:
     return str(self.src) 
 
+
 """
 rappresenta un oggetto thumb con
 - id    identificatore

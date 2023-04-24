@@ -1,57 +1,58 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.contrib.auth.hashers import make_password, check_password
-from django.db import IntegrityError
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.views import View
+from django.utils.html import strip_tags
 
-from user.models import User
+from .forms import RegistrationForm
+from profile.models import UserProfile
 
-def view_login(request):
-  if request.method == "POST":
-    email  = request.POST.get("email")
-    plain_password = request.POST.get("password")
+class ViewLogin(View):
+  form = AuthenticationForm()
+  context = { 'form': form }
 
-    redirect_to = "home"
-    try:
-      user = User.objects.get(email=email)
+  def get(self, request):
+    return render(request, "authentication/login.html", self.context)
 
-      if not check_password(plain_password, user.password):
-        raise ValidationError("")
+  def post(self, request):
+    self.form = AuthenticationForm(request.POST, data=request.POST)
+    username = self.form.data.get('username')
+    password = self.form.data.get('password')
+    user = authenticate(username=username, password=password)
+    if user is not None:
+      login(request, user)
       
-      request.session["user_email"] = user.email
-      request.session["user_id"] = user.id
-      if user.avatar:
-        request.session["user_avatar_url"] = str(user.avatar) 
-      
+      #?redirect_to=/profile/
+      redirect_to = request.GET.get('redirect_to', 'view_browse')
       messages.success(request, f'Login completato con successo')
-    except (ObjectDoesNotExist, ValidationError):
-      redirect_to = "login"
-      messages.error(request, f'Email o password errati')
+      return redirect(redirect_to)
+    else:
+      for e in self.form.errors.values():
+        messages.error(request, f'{strip_tags(e)}')
+    
+    return redirect('view_login')
 
-    return redirect(redirect_to)
+class ViewSignUp(View):
+  form = RegistrationForm()
+  context = { 'form': form }
 
-  return render(request, "authentication/login.html")
+  def get(self, request):
+    return render(request, "authentication/signup.html", self.context)
 
-def view_signup(request):
-  if request.method == "POST":
-    email = request.POST.get("email")
-    plain_password = request.POST.get("password")
-    encrypted_password = make_password(plain_password)
+  def post(self, request):
+    self.form = RegistrationForm(request.POST)
 
-    redirec_to = "home"
-    try:
-      user = User.objects.create(email=email, password=encrypted_password)
-      
-      request.session["user_email"] = user.email
-      request.session["user_id"] = user.id
+    if self.form.is_valid():
+      user = self.form.save()
+      UserProfile.objects.create(user=user, avatar=None)
+      login(request, user)
       messages.success(request, f'Registrazione completata!') 
-    except IntegrityError as e:
-      messages.warning(request, f'Esiste già un utente con questa email')
-      redirec_to = "signup"
-    return redirect(redirec_to)
-  
-  return render(request, "authentication/signup.html")
+      return redirect('view_browse')
+    
+    return redirect('view_signup')
 
-def logout(request):
-  request.session.flush()
-  return redirect("home")
+def view_logout(request):
+  logout(request)
+  return redirect("view_browse")
+  

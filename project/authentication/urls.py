@@ -4,11 +4,11 @@ from . import views
 
 urlpatterns = [
   # http://127.0.0.1:8000/authentication/login
-  path("login/", views.view_login, name="view_login"),
+  path("login/", views.ViewLogin.as_view(), name="view_login"),
 
   # http://127.0.0.1:8000/authentication/signup
-  path("signup/", views.view_signup, name="view_signup"),
+  path("sign-up/", views.ViewSignUp.as_view(), name="view_signup"),
 
-  # http://127.0.0.1:8000/authentication/signup
-  path("logout/", views.logout, name="logout"),
+  # http://127.0.0.1:8000/authentication/logout
+  path("logout/", views.view_logout, name="view_logout"),
 ]

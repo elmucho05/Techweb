@@ -21,15 +21,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-	path('admin/', admin.site.urls),
-  
-	# http://127.0.0.1:8000/...
-    path('', include('movies.urls')),
-
-    # http://127.0.0.1:8000/user/<uid>/...
-    path('user/<int:uid>/', include('user.urls')),
-
-    # http://127.0.0.1:8000/authentication/...
+	path('admin/',          admin.site.urls),
+    path('',                include('movies.urls')),
     path('authentication/', include('authentication.urls')),
+    path('profile/',        include('profile.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
