@@ -9,18 +9,19 @@
   <h1>{{ title.name }}</h1>
 
   <ul class="list-group">
-    <li class="list-group-item px-0  border-0">{{ title.release_date }}</li>
-    <li class="list-group-item px-0  border-0">{{ title.genre }}</li>
+    <li class="list-group-item px-0  border-0"><u>Data di rilascio:</u> <i>{{ title.release_date }}</i></li>
+    <li class="list-group-item px-0  border-0"><u>Genere:</u> <i>{{ title.genre }}</i></li>
 
     {% if title.type == "film" %}
-    <li class="list-group-item px-0  border-0">{{ film.director }}</li>
+      <li class="list-group-item px-0  border-0"><u>Durata:</u> <i>{{ film.video.duration }} minuti</i> </li>
+      <li class="list-group-item px-0  border-0"><u>Regista:</u> <i>{{ film.director }}</i></li>
     {% endif %}
 
     {% if title.type == "serie" %}
-    <li class="list-group-item px-0  border-0">{{ serie.seasons }} stagioni</li>
+      <li class="list-group-item px-0  border-0"><u>Numero stagioni:</u> <i>{{ serie.seasons }}</i></li>
     {% endif %}
 
-    <li class="list-group-item px-0  border-0"><p>{{ title.description }}</p></li>
+    <li class="list-group-item px-0  border-0"><p><u>Descrizione:</u> <i>{{ title.description }}</i></p></li>
 
     {% load static %}
     <li class="list-group-item px-0 border-0">
@@ -40,43 +41,61 @@
     {% endif %}
   </ul>
 
-    {% if title.type == "serie" %}
-    <div class="accordion" id="accordionSeasons">
-
+  {% if title.type == "serie" %}
+  <div class="mt-5 mb-5"></div>
+  <div class="card border-0">
+    <div class="card-body px-0">
+      <ul class="list-group list-group-flush">
       {% for season in seasons_range %}
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="heading{{season}}">
-          <button class="accordion-button" 
-                  type="button" 
-                  data-bs-toggle="collapse" 
-                  data-bs-target="#collapse{{season}}" 
-                  aria-expanded="true" 
-                  aria-controls="collapse{{season}}">
-            Stagione {{ season }}
-          </button>
-        </h2>
-        <div id="collapse{{season}}" class="accordion-collapse collapse show" aria-labelledby="heading{{season}}" data-bs-parent="#accordionSeason">
-          <div class="accordion-body">
-            <ul class="list-group">
-              {% for ep in episodes %}
-              {% if ep.num_season == season %}
-              <li class="list-group-item border-0">
-                <a  href="{% url 'view_watch' ep.video.id %}" 
-                    class="text-decoration-none" 
-                    target="_blank" 
-                    rel="noopener noreferrer">{{ ep }}</a>
-              </li>
-              {% endif %}
-              {% endfor %}
-            </ul>
-            
-          </div>
-        </div>
-      </div>
+      <li class="list-group-item px-0 border-0"><b>Stagione {{ season }}</b></li>
+      
+      <ol class="list-group list-group-flush list-group-numbered">
+      {% for ep in episodes %}
+      {% if ep.num_season == season %}
+      <li class="list-group-item">
+        <a  href="{% url 'view_watch' ep.video.id %}" class="text-decoration-none" target="_blank" 
+            rel="noopener noreferrer">{{ ep }}</a>
+      </li>
+      {% endif %}
       {% endfor %}
-
+      </ol>
+      <hr>
+      {% endfor %}
+      </ul>
     </div>
+  </div>
+  {% endif %}
+
+  <div class="mt-5 mb-5"></div>
+
+  {% include 'alert.html' %}
+
+  <div class="card border-0">
+    <h5 class="card-header">Sezione commenti</h5>
+    
+    {% if user.is_authenticated %}
+    <div class="card-body">
+      <form action="{% url 'view_details' title.id %}" method="POST">
+        {% csrf_token %} 
+        <label class="form-label">Aggiungi un commento</label>
+        <textarea class="form-control" name="comment-text" rows="3"></textarea>
+        <button class="btn btn-primary mt-3 mb-3" type="submit">Aggiungi</button>
+      </form>
+    </div>
+    <hr>
     {% endif %}
+
+    <div class="card-body">
+      <ul class="list-group list-group-flush">
+        {% for comment in comments %}
+        <li class="list-group-item px-0">
+          <h6><b>{{ comment.user }}</b> ha commentato:</h6>
+          <p>{{ comment.text }}</p>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
     
 </div>
 

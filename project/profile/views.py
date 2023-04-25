@@ -1,13 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.utils.html import strip_tags
-
 
 from .models import UserProfile
 
@@ -34,7 +31,6 @@ class ViewProfile(LoginRequiredMixin, View):
       update_user_avatar(request)
 
     return redirect('view_profile')
-
 
 def update_user_password(request):
   form = PasswordChangeForm(user=request.user, data=request.POST)

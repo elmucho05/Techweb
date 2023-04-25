@@ -27,10 +27,9 @@ class ViewLogin(View):
       redirect_to = request.GET.get('redirect_to', 'view_browse')
       messages.success(request, f'Login completato con successo')
       return redirect(redirect_to)
-    else:
-      for e in self.form.errors.values():
-        messages.error(request, f'{strip_tags(e)}')
     
+    for e in self.form.errors.values():
+      messages.error(request, f'{strip_tags(e)}')
     return redirect('view_login')
 
 class ViewSignUp(View):
@@ -50,6 +49,9 @@ class ViewSignUp(View):
       messages.success(request, f'Registrazione completata!') 
       return redirect('view_browse')
     
+    for e in self.form.errors.values():
+      print(e)
+      messages.error(request, f'{strip_tags(e)}')
     return redirect('view_signup')
 
 def view_logout(request):

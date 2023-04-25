@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.contrib.auth.models import User
 
 class Genre(models.Model):
   name = models.CharField(primary_key=True, max_length=30)
@@ -9,7 +10,7 @@ class Genre(models.Model):
 
 
 """
-rappresenta un oggetto video con
+rappresenta un video
 - id          identificatore
 - src         sorgente del video
 - duration    durata del video
@@ -25,7 +26,7 @@ class Video(models.Model):
 
 
 """
-rappresenta un oggetto thumb con
+rappresenta la copertina di un titolo
 - id    identificatore
 - src   sorgente dell'immagine
 """
@@ -62,7 +63,7 @@ class Title(models.Model):
 
 
 """
-la classe Film eredita da Title e aggiunge degli attributi
+la classe Film eredita da Title e implementa attributi aggiuntivi
 - director    regista del film
 - video       riferimento al video
 """
@@ -88,11 +89,11 @@ class TVSerie(models.Model):
 
 
 """
-la class Episode rappresenta un oggetto di tipo episodio
+rappresenta un episodio legato ad una serie tv
 - name_ep     nome dell'episodio
 - num_ep      numero dell'episodio
 - num_season  numero della stagione
-- tv          riferimento alla serie tv
+- serie       riferimento alla serie tv
 - video       riferimento al video
 """
 class Episode(models.Model):
