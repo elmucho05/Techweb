@@ -9,6 +9,8 @@
   <h4>Registrati</h4>
   <div class="mb-5"></div>
 
+  {% include 'alert.html' %}
+
   {% load crispy_forms_tags %}
   <form action="{% url 'view_signup' %}" method="post">
     {% csrf_token %}
