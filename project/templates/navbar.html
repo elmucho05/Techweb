@@ -1,0 +1,57 @@
+{% load static %}  
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light p-4">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'view_browse' %}">MovieStreaming</a>
+
+    <div class="collapse navbar-collapse ">
+      <ul class="navbar-nav me-auto mb-2 ml-2 mb-lg-0 ">
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'view_browse' %}?section=film">Film</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'view_browse' %}?section=serie">Serie TV</a>
+        </li>
+      </ul>
+      
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" href="#">
+          <small>{% if request.user.is_authenticated %} {{ request.user.username }}{% else %}Guest{% endif %}</small>
+            
+          </a>
+          <ul class="dropdown-menu rounded-0" aria-labelledby="navbarDropdown">
+            {% if request.user.is_authenticated %}
+              <li><a class="dropdown-item py-0" 
+                href="{% if user.is_superuser %}/admin/{% else %} {% url 'view_profile' %} {% endif %} ">
+                Il tuo profilo</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item py-0" href="{% url 'view_logout' %}">Esci</a></li>  
+            {% else %}
+              <li><a class="dropdown-item" href="{% url 'view_login' %}">Accedi</a></li>
+              <li><a class="dropdown-item" href="{% url 'view_signup' %}">Registrati</a></li>
+            {% endif %}
+          </ul>
+        </li>
+      </ul>
+
+      <form class="d-flex" action="{% url 'view_browse' %}" method="GET">
+        <div class="input-group input-group-sm">
+          <div class="input-group-prepend">
+            <span class="input-group-text bg-transparent rounded-0">
+              <!-- search icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+              </svg>
+              <!----------------->
+            </span>
+          </div>
+          <input type="text" name="search" class="form-control rounded-0" placeholder="search">
+        </div>
+      </form>
+
+    </div>
+  </div>
+</nav>
