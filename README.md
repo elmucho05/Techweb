@@ -30,8 +30,23 @@ Feature aggiuntive (obbligatorio)
 7. i film vengono valutati dagli utenti (registrati)
 8. dashboard per utenti con possibilità di aggiornare i propri dati personali, visualizzare la history dei film visti, dei commenti effettuati, delle valutazioni fatte, visualizzare lo stato dell'abbonamento ...
 
-# Comandi
-- source venv/bin/activate
-- python3 manage.py runserver
-- python3 manage.py makemigrations
-- python3 manage.py migrate
+## Prerequisiti
+1. Installare pip
+  - Linux `python3 -m pip install --user --upgrade pip`
+  - Windows `py -m pip install --upgrade pip`
+
+2. Installare Virtualenv
+  - Linux `python3 -m pip install --user virtualenv`
+  - Windows `py -m pip install --user virtualenv`
+
+3. Creare l'ambiente virtuale
+  - Linux `python3 -m venv venv`  
+  - Windows `py -m venv env`
+
+4. Attivare l'ambiente virtuale
+  - Linux `source venv/venv`
+  - Windows `.\venv\Scripts\activate`
+
+3. Installare le dipendenze
+  - Linux `python3 -m pip install -r requirements.txt`
+  - Windows `py -m pip install -r requirements.txt`
