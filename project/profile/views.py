@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
+from django.contrib.auth import update_session_auth_hash, authenticate, logout
 from django.contrib import messages
 from django.utils.html import strip_tags
 
@@ -13,11 +13,10 @@ class ViewProfile(LoginRequiredMixin, View):
   redirect_field_name = 'redirect_to'
   
   def get(self, request):
-    user_profile = UserProfile.objects.get(user=request.user)
-    form = PasswordChangeForm(request.user)
     context = { 
-      'update_password_form' : form,
-      'user_profile' : user_profile,
+      'user_profile'         : UserProfile.objects.get(user=request.user),
+      'update_password_form' : PasswordChangeForm(request.user),
+      'delete_account_form'  : AuthenticationForm(),
     }
     return render(request, "user/profile.html", context)
 
@@ -25,12 +24,15 @@ class ViewProfile(LoginRequiredMixin, View):
     action = request.GET.get('action')
 
     if action == 'update-password':
-      update_user_password(request)
+      return update_user_password(request)
     
-    elif action == 'update-avatar':
-      update_user_avatar(request)
+    if action == 'update-avatar':
+      return update_user_avatar(request)
 
-    return redirect('view_profile')
+    if action == 'delete-account':
+      return delete_user_account(request)
+    
+    
 
 def update_user_password(request):
   form = PasswordChangeForm(user=request.user, data=request.POST)
@@ -41,6 +43,7 @@ def update_user_password(request):
   else:
     for e in form.errors.values():
       messages.error(request,f'{strip_tags(e)}')
+  return redirect('view_profile')
   
 def update_user_avatar(request):
   user_profile = UserProfile.objects.get(user=request.user)
@@ -48,6 +51,24 @@ def update_user_avatar(request):
   user_profile.avatar = avatar
   user_profile.save()
   messages.success(request, "Immagine profilo aggiornata!")
-    
+  return redirect('view_profile')
 
+def delete_user_account(request):
+  form = AuthenticationForm(request.POST, data=request.POST)
 
+  if form.is_valid():
+    username = form.data.get('username')
+    password = form.data.get('password')
+    user = authenticate(username=username, password=password)
+    if user is None:
+      messages.error(request, f'Crendenziali non corrette') 
+      return redirect('view_profile')
+ 
+    user.delete()
+    logout(request)
+    messages.success(request, f'Account eliminato con successo!')
+    return redirect('view_browse')
+      
+  for e in form.errors.values():
+    messages.error(request, f'{strip_tags(e)}')
+  return redirect('view_profile')

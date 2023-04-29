@@ -7,7 +7,9 @@ from movies.models import Title
 #[user] james:jamesbond123
 #[user] kevin:kevinlebron
 
-
+"""
+rappresenta le informazioni aggiuntive relative ad un utente
+"""
 class UserProfile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   avatar = models.FileField(upload_to='avatars', null=True, 
@@ -18,7 +20,7 @@ class UserProfile(models.Model):
 
 
 """
-rappresenta un commento che un utente può scrivere sotto ad un titolo
+rappresenta i commenti degli utenti sotto ai titoli 
 - user    riferimento all'utente
 - titolo  riferimento al titolo
 - text    testo del commento
@@ -32,3 +34,9 @@ class UserComment(models.Model):
     return f'{self.user}:{self.title}:{self.text}'
   
 
+"""
+rappresenta la lista dei titoli preferiti di un utente
+"""
+class UserFavorite(models.Model):
+  user  = models.ForeignKey(User, on_delete=models.CASCADE)
+  title = models.ForeignKey(Title, on_delete=models.CASCADE)
