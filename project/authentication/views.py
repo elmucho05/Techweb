@@ -17,16 +17,20 @@ class ViewLogin(View):
 
   def post(self, request):
     self.form = AuthenticationForm(request.POST, data=request.POST)
-    username = self.form.data.get('username')
-    password = self.form.data.get('password')
-    user = authenticate(username=username, password=password)
-    if user is not None:
-      login(request, user)
+    if self.form.is_valid():
+      username = self.form.data.get('username')
+      password = self.form.data.get('password')
+      user = authenticate(username=username, password=password)
+      if user is None:
+        messages.error(request, f'Crendenziali non corrette')
+        return redirect('view_login')
       
+      login(request, user)
       #?redirect_to=/profile/
       redirect_to = request.GET.get('redirect_to', 'view_browse')
       messages.success(request, f'Login completato con successo')
       return redirect(redirect_to)
+    
     
     for e in self.form.errors.values():
       messages.error(request, f'{strip_tags(e)}')
