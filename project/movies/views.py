@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views import View
 from django.utils.safestring import mark_safe
 from django.core.exceptions import ValidationError
 from movies.models import Video, Film, TVSerie, Title, Episode
-from profile.models import UserComment
+from profile.models import UserComment, UserFavorite
 
 def home(request):
   titles = Title.objects.all()
@@ -61,13 +63,34 @@ def view_browse(request):
 
   return home(request)
 
+def view_watch(request, video_id):
+  video = get_object_or_404(Video, id=video_id)
+  context = { 
+    "video" : video,
+    "is_authorized" : True,
+  }
+  messages.error(request, "Il servizio è disponibile solo per gli abbonati!")
+  return render(request, 'movies/watch.html', context)
+
+
 
 class ViewTitleDetails(View):
 
   def get(self, request, title_id):
     title = get_object_or_404(Title, id=title_id)
+    
+    is_favorite = True
+    try:
+      UserFavorite.objects.get(user=request.user, title=title)
+    except:
+      is_favorite = False
+
     comments = UserComment.objects.filter(title=title)
-    context = {"title" : title,"comments" : comments}
+    context = {
+      "title" : title,
+      "is_favorite" : is_favorite,
+      "comments" : comments
+    }
 
     if title.type == 'film':
       film  = Film.objects.get(title_id=title_id) 
@@ -81,8 +104,8 @@ class ViewTitleDetails(View):
       context["seasons_range"] = seasons_range
     return render(request, "movies/details.html", context)
 
-
   def post(self, request, title_id):
+    # add comments to title
     text = request.POST.get('comment-text')
     try:
       UserComment.objects.create(user=request.user, title_id=title_id, text=text)
@@ -92,12 +115,39 @@ class ViewTitleDetails(View):
     return redirect('view_details', title_id=title_id)
 
 
-def view_watch(request, video_id):
-  video = get_object_or_404(Video, id=video_id)
-  context = { 
-    "video" : video,
-    "is_authorized" : True,
-  }
-  messages.error(request, "Il servizio è disponibile solo per gli abbonati!")
-  return render(request, 'movies/watch.html', context)
 
+class ViewTitleFavorites(LoginRequiredMixin, View):
+  login_url = '/authentication/login/'
+  redirect_field_name = 'redirect_to'
+  
+  def get(self, request):
+    titles = []
+    for t in UserFavorite.objects.filter(user=request.user):
+      titles.append(t.title)
+
+    context = { 'titles' : titles }
+    return render(request, 'movies/favorites.html', context)
+
+  # AJAX post request
+  def post(self, request):
+    action   = request.POST.get('action')
+    title_id = request.POST.get('title_id')
+    if action == 'add':
+      return add_to_favorites(request, title_id)
+    if action == 'remove':
+      return remove_from_favorites(request, title_id)
+
+def add_to_favorites(request, title_id):
+  try:
+    UserFavorite.objects.create(user=request.user, title_id=title_id)
+  except ValidationError as e:
+    return JsonResponse({'message' : str(e)}, status=400)
+  return JsonResponse({}, status=200)
+
+def remove_from_favorites(request, title_id):
+  try:
+    obj = UserFavorite.objects.get(user=request.user, title_id=title_id)
+    obj.delete()
+  except ValidationError as e:
+    return JsonResponse({'message' : str(e)}, status=400)
+  return JsonResponse({}, status=200)

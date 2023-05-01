@@ -19,19 +19,13 @@
   <div class="container-fluid p-5">
     <div class="container-fluid p-5">
 
-      {% if browse_search %} {% include "alert.html" %} {% endif %}
-
-      <h1 class="display-6 fw-bold" style="font-size: 2rem;">
-        {% if browse_genre %}{{ browse_genre }}{% endif %}
-        {% if browse_section == 'film' %}Film{% endif %}
-        {% if browse_section == 'serie' %}Serie TV{% endif %}
-      </h1>
+      <h1 class="display-6 fw-bold" style="font-size: 2rem;">I tuoi titoli preferiti</h1>
       <hr>
 
-      {% if browse_titles %}
+      {% if titles %}
       {% load static %}
       <div class="row row-cols-1 row-cols-md-6">
-        {% for title in browse_titles %}
+        {% for title in titles %}
         <div class="col">
           <div class="card h-100 border-0">
             <img src="{% get_media_prefix %}thumbs/{{ title.thumb }}" class="card-img-top rounded-0" style="height: 180px;">
@@ -39,6 +33,10 @@
               <h6 class="card-title">
                 <a href="{% url 'view_details' title.id %}" class=" text-decoration-none text-body">{{ title.name }}</a>
               </h6>
+            </div>
+            <div class="card-footer ">
+              <button class="btn btn-link text-danger text-decoration-none p-0" 
+                style="font-size: 0.8rem;" onclick="removeItem('{{ title.id }}');">Rimuovi</a>
             </div>
           </div>
         </div>
@@ -51,3 +49,28 @@
 
 {% include "footer.html" %} <!-- Footer-->
 {% endblock %} <!-- End content -->
+
+
+{% block script %}<!-- Start script -->
+<script type="text/javascript">
+  function removeItem(title_id){
+    $.ajax({
+      url     : `{% url 'view_favorites' %}`,
+      method  : "POST",
+      data    : { 
+        csrfmiddlewaretoken : '{{ csrf_token }}',
+        action   : 'remove',
+        title_id : title_id
+      },
+      datatype: "json",
+      success : function(data){
+        location.reload();
+      },
+      error : function(data){
+        const message = data.message;
+        alert(message);
+      }
+    });
+  }
+</script>
+{% endblock %}<!-- End script -->
