@@ -22,13 +22,12 @@ Feature aggiuntive (obbligatorio)
 
 # TODO List
 1. i film vengono consigliati agli utenti (registrati)
-2. gli utenti possono mettere nei preferiti dei film per poi vederli in seguito
-3. creazione di un abbonamento
-4. gli utenti potranno disdire l'abbonamento in qualsiasi momento 
-5. gli utenti (registrati) possono inserire un film inviando una richiesta all'amministratore e questo potrà decidere se accettare o no di inserirlo nel catalogo
-6. i film possono essere inclusi nell'abbonamento (quindi "gratuiti" per gli utenti) oppure essere noleggiati con una piccola somma aggiuntiva
-7. i film vengono valutati dagli utenti (registrati)
-8. dashboard per utenti con possibilità di aggiornare i propri dati personali, visualizzare la history dei film visti, dei commenti effettuati, delle valutazioni fatte, visualizzare lo stato dell'abbonamento ...
+2. creazione di un abbonamento
+3. gli utenti potranno disdire l'abbonamento in qualsiasi momento 
+4. gli utenti (registrati) possono inserire un film inviando una richiesta all'amministratore e questo potrà decidere se accettare o no di inserirlo nel catalogo
+5. i film possono essere inclusi nell'abbonamento (quindi "gratuiti" per gli utenti) oppure essere noleggiati con una piccola somma aggiuntiva
+6. i film vengono valutati dagli utenti (registrati)
+7. dashboard per utenti con possibilità di aggiornare i propri dati personali, visualizzare la history dei film visti, dei commenti effettuati, delle valutazioni fatte, visualizzare lo stato dell'abbonamento ...
 
 ## Prerequisiti
 1. Installare pip
