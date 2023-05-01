@@ -73,6 +73,7 @@ def view_watch(request, video_id):
   return render(request, 'movies/watch.html', context)
 
 
+
 class ViewTitleDetails(View):
 
   def get(self, request, title_id):
@@ -104,31 +105,16 @@ class ViewTitleDetails(View):
     return render(request, "movies/details.html", context)
 
   def post(self, request, title_id):
-    action = request.GET.get('action')
-    if action == 'add-comment':
-      return add_comment(request, title_id)
-    if action == 'add-to-favorites':
-      return add_to_favorites(request, title_id)
-
+    # add comments to title
+    text = request.POST.get('comment-text')
+    try:
+      UserComment.objects.create(user=request.user, title_id=title_id, text=text)
+      messages.success(request, 'Commento aggiunto con successo!')
+    except ValidationError as e:
+      messages.error(request, str(e))
     return redirect('view_details', title_id=title_id)
 
-def add_comment(request, title_id):
-  text = request.POST.get('comment-text')
-  try:
-    UserComment.objects.create(user=request.user, title_id=title_id, text=text)
-    messages.success(request, 'Commento aggiunto con successo!')
-  except ValidationError as e:
-    messages.error(request, str(e))
-  return redirect('view_details', title_id=title_id)
 
-def add_to_favorites(request, title_id):
-  try:
-    UserFavorite.objects.create(user=request.user, title_id=title_id)
-  except ValidationError as e:
-    return JsonResponse({'message' : str(e)}, status=400)
-  return JsonResponse({}, status=200)
-  
-  
 
 class ViewTitleFavorites(LoginRequiredMixin, View):
   login_url = '/authentication/login/'
@@ -142,7 +128,26 @@ class ViewTitleFavorites(LoginRequiredMixin, View):
     context = { 'titles' : titles }
     return render(request, 'movies/favorites.html', context)
 
+  # AJAX post request
   def post(self, request):
-    pass
+    action   = request.POST.get('action')
+    title_id = request.POST.get('title_id')
+    if action == 'add':
+      return add_to_favorites(request, title_id)
+    if action == 'remove':
+      return remove_from_favorites(request, title_id)
 
+def add_to_favorites(request, title_id):
+  try:
+    UserFavorite.objects.create(user=request.user, title_id=title_id)
+  except ValidationError as e:
+    return JsonResponse({'message' : str(e)}, status=400)
+  return JsonResponse({}, status=200)
 
+def remove_from_favorites(request, title_id):
+  try:
+    obj = UserFavorite.objects.get(user=request.user, title_id=title_id)
+    obj.delete()
+  except ValidationError as e:
+    return JsonResponse({'message' : str(e)}, status=400)
+  return JsonResponse({}, status=200)

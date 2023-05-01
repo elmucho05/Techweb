@@ -8,7 +8,6 @@
     transition: all .2s ease-in-out; 
   }
   .card:hover { 
-    cursor: pointer; 
     transform: scale(1.05); 
   }
 </style>
@@ -28,10 +27,16 @@
       <div class="row row-cols-1 row-cols-md-6">
         {% for title in titles %}
         <div class="col">
-          <div class="card h-100 border-0 pe-auto" redirect_to="{% url 'view_details' title.id %}">
-            <img src="{% get_media_prefix %}thumbs/{{ title.thumb }}" class="card-img-top rounded-0" style="height: 200px;">
-            <div class="card-body bg-light">
-              <h6>{{ title.name }}</h6>
+          <div class="card h-100 border-0">
+            <img src="{% get_media_prefix %}thumbs/{{ title.thumb }}" class="card-img-top rounded-0" style="height: 180px;">
+            <div class="card-body">
+              <h6 class="card-title">
+                <a href="{% url 'view_details' title.id %}" class=" text-decoration-none text-body">{{ title.name }}</a>
+              </h6>
+            </div>
+            <div class="card-footer ">
+              <button class="btn btn-link text-danger text-decoration-none p-0" 
+                style="font-size: 0.8rem;" onclick="removeItem('{{ title.id }}');">Rimuovi</a>
             </div>
           </div>
         </div>
@@ -48,11 +53,24 @@
 
 {% block script %}<!-- Start script -->
 <script type="text/javascript">
-  $(document).ready(function(){
-    $(".card").on("click", function(e){
-      const URL = $(this).attr("redirect_to");
-      window.location.href = URL;
+  function removeItem(title_id){
+    $.ajax({
+      url     : `{% url 'view_favorites' %}`,
+      method  : "POST",
+      data    : { 
+        csrfmiddlewaretoken : '{{ csrf_token }}',
+        action   : 'remove',
+        title_id : title_id
+      },
+      datatype: "json",
+      success : function(data){
+        location.reload();
+      },
+      error : function(data){
+        const message = data.message;
+        alert(message);
+      }
     });
-  });
+  }
 </script>
 {% endblock %}<!-- End script -->

@@ -11,13 +11,13 @@
   <ul class="list-group">
     {% if user.is_authenticated %}
     <li class="list-group-item px-0 border-0">
-      <button 
-        class="btn btn-success" 
-        id="addToFavorites"
-        URL="{% url 'view_details' title.id %}?action=add-to-favorites"
-        {% if is_favorite %}disabled{% endif %}>
-        Aggiungi ai preferiti
-      </button>
+      {% if is_favorite %}
+        <button class="btn btn-danger" onclick="ajaxEvent('{{ title.id }}', 'remove')">Rimuovi dai preferiti</button>
+      {% else %}
+        <button class="btn btn-success" onclick="ajaxEvent('{{ title.id }}', 'add')">Aggiungi ai preferiti</button>
+      {% endif %}
+      
+      
     </li>
     {% endif %}
 
@@ -117,30 +117,25 @@
 
 {% block script %}
 <script type="text/javascript">
-  $(document).ready(function(){
-    const button = $('#addToFavorites');
-    button.on('click', function(e){
-      const URL = $(this).attr('URL');
-
-      $.ajax({
-        url: URL,
-        method: "POST",
-        data: { 
-          csrfmiddlewaretoken : '{{ csrf_token }}',
-          title_id : '{{ title.id }}',
-        },
-        datatype: "json",
-        success : function(data){
-          button.prop('disabled', true);
-        },
-        error : function(data){
-          const message = data.message;
-          alert(message);
-        }
-      });
-
+  function ajaxEvent(title_id, action){
+    $.ajax({
+      url     : `{% url 'view_favorites' %}`,
+      method  : "POST",
+      data    : { 
+        csrfmiddlewaretoken : '{{ csrf_token }}',
+        action   : action,
+        title_id : title_id
+      },
+      datatype: "json",
+      success : function(data){
+        location.reload();
+      },
+      error : function(data){
+        const message = data.message;
+        alert(message);
+      }
     });
-  });
+  }
 </script>
 {% endblock %}
 
