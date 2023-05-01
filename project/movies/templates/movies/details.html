@@ -9,6 +9,18 @@
   <h1>{{ title.name }}</h1>
 
   <ul class="list-group">
+    {% if user.is_authenticated %}
+    <li class="list-group-item px-0 border-0">
+      <button 
+        class="btn btn-success" 
+        id="addToFavorites"
+        URL="{% url 'view_details' title.id %}?action=add-to-favorites"
+        {% if is_favorite %}disabled{% endif %}>
+        Aggiungi ai preferiti
+      </button>
+    </li>
+    {% endif %}
+
     <li class="list-group-item px-0  border-0"><u>Data di rilascio:</u> <i>{{ title.release_date }}</i></li>
     <li class="list-group-item px-0  border-0"><u>Genere:</u> <i>{{ title.genre }}</i></li>
 
@@ -70,12 +82,12 @@
 
   {% include 'alert.html' %}
 
-  <div class="card border-0">
+  <div class="card border-0"> <!-- Sezione commenti -->
     <h5 class="card-header">Sezione commenti</h5>
     
     {% if user.is_authenticated %}
     <div class="card-body">
-      <form action="{% url 'view_details' title.id %}" method="POST">
+      <form action="{% url 'view_details' title.id %}?action=add-comment" method="POST">
         {% csrf_token %} 
         <label class="form-label">Aggiungi un commento</label>
         <textarea class="form-control" name="comment-text" rows="3"></textarea>
@@ -95,11 +107,40 @@
         {% endfor %}
       </ul>
     </div>
-  </div>
+  </div><!-- End Sezione commenti -->
     
 </div>
 
 
 {% include "footer.html" %}<!-- Footer-->
 {% endblock %}<!-- End content -->
+
+{% block script %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    const button = $('#addToFavorites');
+    button.on('click', function(e){
+      const URL = $(this).attr('URL');
+
+      $.ajax({
+        url: URL,
+        method: "POST",
+        data: { 
+          csrfmiddlewaretoken : '{{ csrf_token }}',
+          title_id : '{{ title.id }}',
+        },
+        datatype: "json",
+        success : function(data){
+          button.prop('disabled', true);
+        },
+        error : function(data){
+          const message = data.message;
+          alert(message);
+        }
+      });
+
+    });
+  });
+</script>
+{% endblock %}
 

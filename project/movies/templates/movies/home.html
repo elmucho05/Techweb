@@ -33,8 +33,7 @@
 
     {% for genre in genres %}
     <div>
-      <h1 class="display-6 d-inline" style="font-size: 2rem;">{{ section }}</h1>
-      <h1 class="display-6 d-inline" style="font-size: 2rem;">{{ genre.genre_id }}</h1>
+      <h1 class="display-6 d-inline fw-bold" style="font-size: 2rem;">{{ genre.genre_id }}</h1>
       <a href="{% url 'view_browse' %}?genre={{ genre.genre_id }}" class="d-inline px-3 text-decoration-none">sfoglia tutti</a>
       <hr>
     </div>
@@ -72,13 +71,13 @@
   $(document).ready(function(){
     $("#selectGenre").on("change", function(e){
       const genre = $("option:selected", this).val();
-      const newUrl = window.location.origin + `{% url 'view_browse' %}?genre=${genre}`; 
-      window.location.href = newUrl;
+      const URL = window.location.origin + `{% url 'view_browse' %}?genre=${genre}`; 
+      window.location.href = URL;
     });
 
     $(".card").on("click", function(e){
-      const newUrl = $(this).attr("redirect_to");
-      window.location.href = newUrl;
+      const URL = $(this).attr("redirect_to");
+      window.location.href = URL;
     });
     
   });
