@@ -7,22 +7,19 @@ from django.contrib.auth import update_session_auth_hash, authenticate, logout
 from django.contrib import messages
 from django.utils.html import strip_tags
 
-from .models import UserProfile, UserComment
+from .models import UserProfile, UserComment, UserReview
 
 class ViewProfile(LoginRequiredMixin, View):
   login_url = '/authentication/login/'
   redirect_field_name = 'redirect_to'
   
   def get(self, request):
-    comments = UserComment.objects.filter(user=request.user)
-    for c in comments:
-      print(c)
-
     context = { 
       'user_profile'         : UserProfile.objects.get(user=request.user),
       'update_password_form' : PasswordChangeForm(request.user),
       'delete_account_form'  : AuthenticationForm(),
-      'comments'             : comments
+      'reviews'              : UserReview.objects.filter(user=request.user),
+      'comments'             : UserComment.objects.filter(user=request.user)
     }
     return render(request, "user/profile.html", context)
 
@@ -42,8 +39,6 @@ class ViewProfile(LoginRequiredMixin, View):
     if action == 'delete-comment':
       return delete_user_comment(request)
     
-    
-
 def update_user_password(request):
   form = PasswordChangeForm(user=request.user, data=request.POST)
   if form.is_valid():
@@ -84,12 +79,13 @@ def delete_user_account(request):
   return redirect('view_profile')
 
 def delete_user_comment(request):
-  title_id = request.GET.get('title-id')
+  comment_id = request.GET.get('comment-id')
 
   try:
-    UserComment.objects.get(user=request.user, title_id=title_id).delete()
+    UserComment.objects.get(id=comment_id).delete()
   except Exception as e:
     return JsonResponse({'message' : str(e)}, status=400)
 
+  messages.success(request, 'Commento eliminato con successo')
   return JsonResponse({}, status=200)
   

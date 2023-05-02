@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import FileExtensionValidator
+from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
 from movies.models import Title
 
@@ -8,7 +8,8 @@ from movies.models import Title
 #[user] kevin:kevinlebron
 
 """
-rappresenta le informazioni aggiuntive relative ad un utente
+rappresenta le informazioni aggiuntive relative ad un utente:
+- user deve essere UNIQUE
 """
 class UserProfile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -20,7 +21,8 @@ class UserProfile(models.Model):
 
 
 """
-rappresenta i commenti degli utenti sotto ai titoli 
+rappresenta i commenti degli utenti sotto ai titoli:
+un utente può commentare più volte lo stesso titolo
 - user    riferimento all'utente
 - titolo  riferimento al titolo
 - text    testo del commento
@@ -35,8 +37,27 @@ class UserComment(models.Model):
   
 
 """
-rappresenta la lista dei titoli preferiti di un utente
+rappresenta la lista dei titoli preferiti di un utente:
+un utente non può mettere nei preferiti lo stesso titolo più volte
+(il controllo avviene anche nella parte di FE)
 """
 class UserFavorite(models.Model):
   user  = models.ForeignKey(User, on_delete=models.CASCADE)
   title = models.ForeignKey(Title, on_delete=models.CASCADE)
+  
+  class Meta:
+    unique_together = (("user", "title"),)
+
+"""
+rappresenta le recensioni fatte da un utente:
+un utente non può recensire lo stesso titolo più volte
+(il controllo avviene anche nella parte di FE)
+- rating è un valore intero che assume valori 1-5
+"""
+class UserReview(models.Model):
+  user   = models.ForeignKey(User, on_delete=models.CASCADE)
+  title  = models.ForeignKey(Title, on_delete=models.CASCADE)
+  rating = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(5)])
+
+  class Meta:
+    unique_together = (("user", "title"),)
