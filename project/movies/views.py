@@ -8,7 +8,22 @@ from django.core.exceptions import ValidationError
 from movies.models import Video, Film, TVSerie, Title, Episode
 from profile.models import UserComment, UserFavorite
 
-def home(request):
+
+class ViewBrowse(View):
+  def get(self, request):
+    if len(request.GET) == 0:
+      return view_home(request)
+    
+    section = request.GET.get("section", None)  # ?section=<film|serie>
+    genre   = request.GET.get("genre",   None)  # ?genre=<genre>
+    search  = request.GET.get("search",  None)  # ?search=<search>
+
+    if search: return browse_search(request, search)
+    if genre:  return browse_genre(request, genre)
+    if section and section == 'film':  return browse_films(request)
+    if section and section == 'serie': return browse_series(request)
+
+def view_home(request):
   titles = Title.objects.all()
   genres = titles.values("genre_id").distinct()
   context = {
@@ -20,24 +35,24 @@ def home(request):
 def browse_films(request):
   titles = Title.objects.filter(type="film") 
   context = {
-    "browse_section" : "film",
-    "browse_titles"  : titles,
+    "section" : "film",
+    "titles"  : titles,
   }
   return render(request, "movies/browse.html", context) 
 
 def browse_series(request):
   titles = Title.objects.filter(type="serie") 
   context = {
-    "browse_section" : "serie",
-    "browse_titles"  : titles,
+    "section" : "serie",
+    "titles"  : titles,
   }
   return render(request, "movies/browse.html", context) 
 
 def browse_genre(request, genre):
   titles = Title.objects.filter(genre_id=genre)
   context = {
-    "browse_genre"  : genre,
-    "browse_titles" : titles,
+    "genre"  : genre,
+    "titles" : titles,
   }
   return render(request, "movies/browse.html", context) 
 
@@ -45,23 +60,10 @@ def browse_search(request, search):
   titles = Title.objects.filter(name__icontains=search)
   messages.info(request, mark_safe(f'{len(titles)} risultati per <b>{search}</b>'))
   context = {
-    "browse_search"  : search,
-    "browse_titles"  : titles,
+    "search"  : search,
+    "titles"  : titles,
   }
   return render(request, "movies/browse.html", context) 
-
-def view_browse(request):
-  if len(request.GET) > 0:
-    section = request.GET.get("section", None)  # ?section=<film|serie>
-    genre   = request.GET.get("genre",   None)  # ?genre=<genre>
-    search  = request.GET.get("search",  None)  # ?search=<search>
-
-    if search: return browse_search(request, search)
-    if genre:  return browse_genre(request, genre)
-    if section and section == 'film':  return browse_films(request)
-    if section and section == 'serie': return browse_series(request)
-
-  return home(request)
 
 def view_watch(request, video_id):
   video = get_object_or_404(Video, id=video_id)
@@ -69,9 +71,8 @@ def view_watch(request, video_id):
     "video" : video,
     "is_authorized" : True,
   }
-  messages.error(request, "Il servizio è disponibile solo per gli abbonati!")
+  #messages.error(request, "Il servizio è disponibile solo per gli abbonati!")
   return render(request, 'movies/watch.html', context)
-
 
 
 class ViewTitleDetails(View):
@@ -113,8 +114,6 @@ class ViewTitleDetails(View):
     except ValidationError as e:
       messages.error(request, str(e))
     return redirect('view_details', title_id=title_id)
-
-
 
 class ViewTitleFavorites(LoginRequiredMixin, View):
   login_url = '/authentication/login/'

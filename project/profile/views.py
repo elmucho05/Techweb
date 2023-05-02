@@ -1,22 +1,28 @@
 from django.shortcuts import render, redirect
 from django.views import View
+from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.contrib.auth import update_session_auth_hash, authenticate, logout
 from django.contrib import messages
 from django.utils.html import strip_tags
 
-from .models import UserProfile
+from .models import UserProfile, UserComment
 
 class ViewProfile(LoginRequiredMixin, View):
   login_url = '/authentication/login/'
   redirect_field_name = 'redirect_to'
   
   def get(self, request):
+    comments = UserComment.objects.filter(user=request.user)
+    for c in comments:
+      print(c)
+
     context = { 
       'user_profile'         : UserProfile.objects.get(user=request.user),
       'update_password_form' : PasswordChangeForm(request.user),
       'delete_account_form'  : AuthenticationForm(),
+      'comments'             : comments
     }
     return render(request, "user/profile.html", context)
 
@@ -31,6 +37,10 @@ class ViewProfile(LoginRequiredMixin, View):
 
     if action == 'delete-account':
       return delete_user_account(request)
+    
+    # AJAX post request
+    if action == 'delete-comment':
+      return delete_user_comment(request)
     
     
 
@@ -72,3 +82,14 @@ def delete_user_account(request):
   for e in form.errors.values():
     messages.error(request, f'{strip_tags(e)}')
   return redirect('view_profile')
+
+def delete_user_comment(request):
+  title_id = request.GET.get('title-id')
+
+  try:
+    UserComment.objects.get(user=request.user, title_id=title_id).delete()
+  except Exception as e:
+    return JsonResponse({'message' : str(e)}, status=400)
+
+  return JsonResponse({}, status=200)
+  

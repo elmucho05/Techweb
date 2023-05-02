@@ -46,6 +46,6 @@ Feature aggiuntive (obbligatorio)
   - Linux `source venv/venv`
   - Windows `.\venv\Scripts\activate`
 
-3. Installare le dipendenze
+5. Installare le dipendenze
   - Linux `python3 -m pip install -r requirements.txt`
   - Windows `py -m pip install -r requirements.txt`
