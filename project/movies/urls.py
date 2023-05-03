@@ -15,6 +15,7 @@ urlpatterns = [
   # http://127.0.0.1:8000/title/<title_id>
   path('title/<int:title_id>', views.ViewTitleDetails.as_view(), name="view_details"),
 
-  # http://127.0.0.1:8000/watch/<video_id>
-  path('watch/<int:video_id>', views.view_watch, name="view_watch"),
+  # http://127.0.0.1:8000/watch/<title-id>
+  # http://127.0.0.1:8000/watch/<title-id>?s=<s-id>&e=<ep-id>
+  path('watch/<int:title_id>', views.ViewWatchVideo.as_view(), name="view_watch"),
 ]

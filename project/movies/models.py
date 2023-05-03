@@ -90,6 +90,7 @@ class TVSerie(models.Model):
 
 """
 rappresenta un episodio legato ad una serie tv
+la chiave primaria è composta da <ep, season, serie>
 - name_ep     nome dell'episodio
 - num_ep      numero dell'episodio
 - num_season  numero della stagione
@@ -102,6 +103,10 @@ class Episode(models.Model):
   num_season  = models.IntegerField()
   serie       = models.ForeignKey(TVSerie, on_delete=models.CASCADE)
   video       = models.ForeignKey(Video, null=True, on_delete=models.SET_NULL)
+
+  class Meta:
+    unique_together = (("num_ep", "num_season", "serie"),)
+
   def __str__(self) -> str:
     return f'S{self.num_season} E{self.num_ep} {self.name_ep}'
   
