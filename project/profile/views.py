@@ -7,7 +7,7 @@ from django.contrib.auth import update_session_auth_hash, authenticate, logout
 from django.contrib import messages
 from django.utils.html import strip_tags
 
-from .models import UserProfile, UserComment, UserReview
+from .models import UserProfile, UserComment, UserReview, UserHistory
 
 class ViewProfile(LoginRequiredMixin, View):
   login_url = '/authentication/login/'
@@ -19,7 +19,8 @@ class ViewProfile(LoginRequiredMixin, View):
       'update_password_form' : PasswordChangeForm(request.user),
       'delete_account_form'  : AuthenticationForm(),
       'reviews'              : UserReview.objects.filter(user=request.user),
-      'comments'             : UserComment.objects.filter(user=request.user)
+      'history'              : UserHistory.objects.filter(user=request.user),
+      'comments'             : UserComment.objects.filter(user=request.user),
     }
     return render(request, "user/profile.html", context)
 

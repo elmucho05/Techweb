@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
+from django.utils import timezone
 from movies.models import Title
 
 #[user] simonee:modena99
@@ -58,6 +59,18 @@ class UserReview(models.Model):
   user   = models.ForeignKey(User, on_delete=models.CASCADE)
   title  = models.ForeignKey(Title, on_delete=models.CASCADE)
   rating = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(5)])
+
+  class Meta:
+    unique_together = (("user", "title"),)
+
+
+"""
+rappresenta la history dei film visti da un utente
+"""
+class UserHistory(models.Model):
+  user   = models.ForeignKey(User, on_delete=models.CASCADE)
+  title  = models.ForeignKey(Title, on_delete=models.CASCADE)
+  date   = models.DateField(default=timezone.now)
 
   class Meta:
     unique_together = (("user", "title"),)

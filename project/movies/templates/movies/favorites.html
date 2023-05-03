@@ -21,28 +21,26 @@
 
       <h1 class="display-6 fw-bold" style="font-size: 2rem;">I tuoi titoli preferiti</h1>
       <hr>
-
-      {% if titles %}
+      
       {% load static %}
       <div class="row row-cols-1 row-cols-md-6">
-        {% for title in titles %}
+        {% for item in favorites %}
         <div class="col">
           <div class="card h-100 border-0">
-            <img src="{% get_media_prefix %}thumbs/{{ title.thumb }}" class="card-img-top rounded-0" style="height: 180px;">
+            <img src="{% get_media_prefix %}thumbs/{{ item.title.thumb }}" class="card-img-top rounded-0" style="height: 180px;">
             <div class="card-body">
               <h6 class="card-title">
-                <a href="{% url 'view_details' title.id %}" class=" text-decoration-none text-body">{{ title.name }}</a>
+                <a href="{% url 'view_details' item.title.id %}" class=" text-decoration-none text-body">{{ item.title.name }}</a>
               </h6>
             </div>
             <div class="card-footer ">
               <button class="btn btn-link text-danger text-decoration-none p-0" 
-                style="font-size: 0.8rem;" onclick="removeItem('{{ title.id }}');">Rimuovi</a>
+                style="font-size: 0.8rem;" onclick="removeItem('{{ item.title.id }}');">Rimuovi</a>
             </div>
           </div>
         </div>
         {% endfor %}
       </div>
-      {% endif %}
 
     </div>
   </div>

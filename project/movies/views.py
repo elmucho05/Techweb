@@ -7,8 +7,30 @@ from django.utils.safestring import mark_safe
 from django.core.exceptions import ValidationError
 from django.db.models import Avg
 from movies.models import Video, Film, TVSerie, Title, Episode
-from profile.models import UserComment, UserFavorite, UserReview
+from profile.models import UserComment, UserFavorite, UserReview, UserHistory
 
+class ViewWatchVideo(LoginRequiredMixin, View):
+  def get(self, request, title_id):
+    context = { "is_authorized" : True }
+    
+    title = get_object_or_404(Title, id=title_id)
+    if title.type == 'serie':
+      season = request.GET.get('s')
+      ep     = request.GET.get('ep')
+      serie   = get_object_or_404(TVSerie, title=title) 
+      episode = get_object_or_404(Episode, serie=serie, num_season=season, num_ep=ep)
+      context['video'] = episode.video
+    else:
+      film = get_object_or_404(Film, title=title)
+      context['video'] = film.video
+
+    try:
+      UserHistory.objects.create(user=request.user, title=title)
+    except:
+      pass
+  
+    #messages.error(request, "Il servizio è disponibile solo per gli abbonati!")
+    return render(request, 'movies/watch.html', context)
 
 class ViewBrowse(View):
   def get(self, request):
@@ -66,15 +88,6 @@ def browse_search(request, search):
   }
   return render(request, "movies/browse.html", context) 
 
-def view_watch(request, video_id):
-  video = get_object_or_404(Video, id=video_id)
-  context = { 
-    "video" : video,
-    "is_authorized" : True,
-  }
-  #messages.error(request, "Il servizio è disponibile solo per gli abbonati!")
-  return render(request, 'movies/watch.html', context)
-
 
 class ViewTitleDetails(View):
 
@@ -117,7 +130,6 @@ class ViewTitleDetails(View):
     if action == 'add-vote':
       return add_vote(request, title_id)
 
-
 def add_comment(request, title_id):
   text = request.POST.get('comment-text')
   try:
@@ -140,13 +152,11 @@ def add_vote(request, title_id):
 class ViewTitleFavorites(LoginRequiredMixin, View):
   login_url = '/authentication/login/'
   redirect_field_name = 'redirect_to'
-  
-  def get(self, request):
-    titles = []
-    for t in UserFavorite.objects.filter(user=request.user):
-      titles.append(t.title)
 
-    context = { 'titles' : titles }
+  def get(self, request):
+    context = { 
+      'favorites' : UserFavorite.objects.filter(user=request.user)
+    }
     return render(request, 'movies/favorites.html', context)
 
   # AJAX post request
