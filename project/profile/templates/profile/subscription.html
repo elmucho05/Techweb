@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Profilo{% endblock %}
+
+
+{% block content %}<!-- Start content -->
+{% include 'navbar.html' %}
+{% load static %}
+<div class="container-fluid">
+  <div class="row">
+
+    {% include 'profile/sidebar.html' %}
+    
+    <div class="col-lg-10 border-start">
+      <div class="container py-5">
+
+        {% include 'alert.html' %}
+
+        <div class="card border-0"> <!-- Start subscription  -->
+          <div class="card-body">
+            <h4 class="card-title">Il tuo abbonamento</h4>
+            <div class="mb-3"></div>
+
+            <div id="box-select-sub">
+              <select class="form-select" id="select-sub">
+                {% for sub in subscription_list %}
+                <option value="{{ sub.type }}">{{ sub.type }} €{{ sub.cost }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            
+            {% if not user_subscription %}
+            <button class="btn btn-link card-link text-decoration-none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+              </svg>
+              Aggiungi
+            </button>
+            {% endif %}
+
+            {% if user_subscription %}
+              {% if user_subscription.is_active %}
+                <p class="card-text">Stato: attivo</p>
+                <p class="card-text">Tipo: {{ user_subscription.subscription.type }}</p>
+                <p class="card-text">Costo: €{{ user_subscription.subscription.cost }}</p>
+                <button class="btn btn-danger" onclick="deactivateSub()">Disattiva</button>
+                <button class="btn btn-link">Modifica</button>
+              {% endif %}
+              
+              {% if not user_subscription.is_active %}
+                <p class="card-text">Stato: non attivo</p>
+                <p class="card-text">Tipo: {{ user_subscription.subscription.type }}</p>
+                <p class="card-text">Costo: €{{ user_subscription.subscription.cost }}</p>
+                <button class="btn btn-success" onclick="activateSub()">Attiva</button>
+                <button class="btn btn-link">Modifica</button>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div><!-- End subscription -->
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} <!-- End content -->
+
+
+{% block script %}<!-- Start script -->
+<script>
+
+</script>
+{% endblock %}<!-- End script -->

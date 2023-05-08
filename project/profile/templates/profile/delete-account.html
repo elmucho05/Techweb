@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Profilo{% endblock %}
+
+
+{% block content %}<!-- Start content -->
+{% include 'navbar.html' %}
+{% load static %}
+<div class="container-fluid">
+  <div class="row">
+
+    {% include 'profile/sidebar.html' %}
+    
+    <div class="col-lg-10 border-start">
+      <div class="container py-5">
+
+        {% include 'alert.html' %}
+
+        <div class="card border-0"> <!-- Start elimina account -->
+          <div class="card-body">
+            <h4 class="card-title">Elimina account</h4>
+
+            {% load crispy_forms_tags %}
+            <form action="{% url 'view_delete_account' %}" method="post">
+              {% csrf_token %}             
+              {{ form|crispy }}
+              <button class="btn btn-danger" type="submit">Elimina</button>
+            </form>
+          </div>
+        </div><!-- End elimina account -->
+      
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} <!-- End content -->
+
+
