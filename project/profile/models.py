@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from movies.models import Title
 
-#[user] simonee:modena99
+#[user] simone:modena99
 #[user] james:jamesbond123
 #[user] kevin:kevinlebron
 
@@ -74,3 +74,31 @@ class UserHistory(models.Model):
 
   class Meta:
     unique_together = (("user", "title"),)
+
+
+
+"""
+rappresenta i vari tipi di abbonamento disponibili
+- annuale
+- mensile
+"""
+class SubscriptionType(models.Model):
+  type = models.CharField(max_length=7, choices=(('mensile','mensile'), ('annuale', 'annuale')), primary_key=True)
+  cost = models.DecimalField(max_digits=5, decimal_places=2)
+  
+  def __str__(self):
+    return f'{self.type}: €{self.cost}'
+
+
+"""
+rappresenta l'abbonamento collegato ad un utente per vedere i titoli
+"""
+class UserSubscription(models.Model):
+  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  subscription = models.OneToOneField(SubscriptionType, on_delete=models.CASCADE)
+  
+  is_active = models.BooleanField(default=True)
+
+
+  
+  
