@@ -7,11 +7,24 @@ from django.utils.safestring import mark_safe
 from django.core.exceptions import ValidationError
 from django.db.models import Avg
 from movies.models import Video, Film, TVSerie, Title, Episode
-from profile.models import UserComment, UserFavorite, UserReview, UserHistory
+from profile.models import UserComment, UserFavorite, UserReview, UserHistory, UserSubscription
 
 class ViewWatchVideo(LoginRequiredMixin, View):
+  login_url = '/authentication/login/'
+  redirect_field_name = 'redirect_to'
+  
   def get(self, request, title_id):
-    context = { "is_authorized" : True }
+    context = { }
+
+    sub = UserSubscription.objects.filter(user=request.user)
+    if not sub.exists():
+      messages.error(request, "Il servizio è disponibile solo per gli abbonati!")
+      return redirect('view_details', title_id)
+    sub = sub.first()
+    if not sub.is_active:
+      messages.error(request, "Il servizio è disponibile solo per gli abbonati! Il tuo abbonamento non è attivo")
+      return redirect('view_details', title_id)
+
     
     title = get_object_or_404(Title, id=title_id)
     if title.type == 'serie':
@@ -24,12 +37,7 @@ class ViewWatchVideo(LoginRequiredMixin, View):
       film = get_object_or_404(Film, title=title)
       context['video'] = film.video
 
-    try:
-      UserHistory.objects.create(user=request.user, title=title)
-    except:
-      pass
-  
-    #messages.error(request, "Il servizio è disponibile solo per gli abbonati!")
+    UserHistory.objects.get_or_create(user=request.user, title=title)
     return render(request, 'movies/watch.html', context)
 
 class ViewBrowse(View):

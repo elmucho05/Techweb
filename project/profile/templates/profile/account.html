@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Profilo{% endblock %}
+
+
+{% block content %}<!-- Start content -->
+{% include 'navbar.html' %}
+{% load static %}
+<div class="container-fluid">
+  <div class="row">
+    
+    {% include 'profile/sidebar.html' %}
+    
+    <div class="col-lg-10 border-start">
+      <div class="container py-5">
+
+        {% include 'alert.html' %}
+
+        <div id="sectionAvatar" class="card border-0"><!-- Start avatar card  -->
+          <h4>Immagine profilo</h4>
+          <div class="row g-0"> <!-- image -->
+            <div class="col-md-4">
+              <img 
+              {% if user_profile.avatar %}
+                src="{{ user_profile.avatar.url }}" 
+              {% else %}
+                src="{% get_media_prefix %}avatars/default.jpg" 
+              {% endif %} 
+              class="img-fluid rounded-start" width="250"height="250">
+              
+            </div><!-- end image -->
+            <div class="col-md-8">
+              <div class="card-body"> <!-- select avatar -->
+                <form action="{% url 'view_update_avatar' %}" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <label class="form-label">Seleziona immagine</label>
+                  <input class="form-control" type="file" name="fileAvatar" required>
+                  <button class="btn btn-primary mt-2" type="submit">Salva</button>
+                </form>
+              </div><!-- end select avatar -->
+            </div>
+          </div>
+        </div><!-- End avatar card -->
+        
+        <div class="mb-5"></div><hr><div class="mb-5"></div>
+
+        <div id="sectionComments" class="card border-0"> <!-- Start i tuoi commenti -->
+          <div class="card-body ">
+            <h4 class="card-title">I tuoi commenti</h4>
+            {% if comments %}
+            <ul class="list-group">
+              {% for comment in comments %}
+              <li class="list-group-item border-0">
+                <h6 class="fw-bold">{{ comment.title }}</h6>
+                <p>{{ comment.text }}</p>
+                <button class="btn btn-danger" onclick="deleteComment('{{ comment.id }}')">Elimina</button>
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p class="card-text">Non ci sono commenti</p>
+            {% endif %}
+          </div>
+        </div><!-- End i tuoi commenti -->
+        
+        <div class="mb-5"></div><hr><div class="mb-5"></div>
+
+        <div id="sectionReviews" class="card border-0"> <!-- Start le tue recensioni -->
+          <div class="card-body ">
+            <h4 class="card-title">Le tue recensioni</h4>
+            {% if reviews %}
+            <ul class="list-group">
+              {% for review in reviews %}
+              <li class="list-group-item border-0">
+                <h6 class="fw-bold">{{ review.title }}</h6>
+                <p>Voto {{ review.rating }}/5</p>
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p class="card-text">Non ci sono recensioni</p>
+            {% endif %}
+          </div>
+        </div><!-- End le tue recensioni -->
+        
+        <div class="mb-5"></div><hr><div class="mb-5"></div>
+
+        <div id="sectionHistory" class="card border-0"> <!-- Start history -->
+          <div class="card-body ">
+            <h4 class="card-title">Il tuo storico</h4>
+            <ul class="list-group">
+              <li class="list-group-item border-0">
+                {% for item in history %}
+                <div class="card border-0">
+                  <div class="row g-0">
+                    <div class="col-md-2">
+                      <img src="{% get_media_prefix %}thumbs/{{ item.title.thumb }}" class="img-fluid h-100 w-100">
+                    </div>
+                    <div class="col-md-10">
+                      <div class="card-body">
+                        <h5 class="card-title">{{ item.title.name }}</h5>
+                        <p class="card-text"><small class="text-muted">{{ item.date }}</small></p>
+                        <p class="card-text">
+                          <a href="{% url 'view_details' item.title.id %}" class="text-decoration-none">Vai alla pagina</a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3"></div>
+                {% endfor %}
+              </li>
+            </ul>
+          </div>
+        </div><!-- End history -->
+     
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} <!-- End content -->
+
+
+{% block script %}<!-- Start script -->
+<script>
+  $(document).ready(function(){
+    $('input[type=password]').each(function(index, elem){
+      $(this).blur();
+    });
+    $('input[type=text]').each(function(index, elem){
+      $(this).blur();
+    });
+  });
+
+  function deleteComment(comment_id){
+    $.ajax({
+      url     : `{% url 'view_delete_comment' %}`,
+      method  : "POST",
+      data    : { 
+        csrfmiddlewaretoken : '{{ csrf_token }}',
+        'comment-id' : comment_id,
+      },
+      datatype: "json",
+      success : function(data){
+        location.reload();
+      },
+      error : function(data){
+        const message = data.message;
+        alert(message);
+      }
+    });
+  }
+
+</script>
+{% endblock %}<!-- End script -->
