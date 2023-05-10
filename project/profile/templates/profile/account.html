@@ -151,55 +151,5 @@
     });
   }
 
-  // function createModifySubscription(action){
-  //   const subscriptionType = $('#select-subscription').find(':selected').val();
-    
-  //   $.ajax({
-  //     url     : `{% url 'view_profile' %}?action=${action}&type=${subscriptionType}`,
-  //     method  : "POST",
-  //     data    : { csrfmiddlewaretoken : '{{ csrf_token }}' },
-  //     datatype: "json",
-  //     success : function(data){
-  //       location.reload();
-  //     },
-  //     error : function(data){
-  //       const message = data.message;
-  //       alert(message);
-  //     }
-  //   });
-  // }
-
-  // function deactivateSub(){
-  //   $.ajax({
-  //     url     : `{% url 'view_profile' %}?action=deactivate-subscription`,
-  //     method  : "POST",
-  //     data    : { csrfmiddlewaretoken : '{{ csrf_token }}' },
-  //     datatype: "json",
-  //     success : function(data){
-  //       location.reload();
-  //     },
-  //     error : function(data){
-  //       const message = data.message;
-  //       alert(message);
-  //     }
-  //   });
-  // }
-
-  // function activateSub(){
-  //   $.ajax({
-  //     url     : `{% url 'view_profile' %}?action=activate-subscription`,
-  //     method  : "POST",
-  //     data    : { csrfmiddlewaretoken : '{{ csrf_token }}' },
-  //     datatype: "json",
-  //     success : function(data){
-  //       location.reload();
-  //     },
-  //     error : function(data){
-  //       const message = data.message;
-  //       alert(message);
-  //     }
-  //   });
-  // }
-
 </script>
 {% endblock %}<!-- End script -->

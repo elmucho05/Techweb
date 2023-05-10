@@ -36,7 +36,6 @@ def update_user_avatar(request):
 
 @require_POST # AJAX POST request
 def delete_user_comment(request):
-  
   comment_id = request.POST.get('comment-id')
 
   try:
@@ -88,7 +87,6 @@ class ViewDeleteAccount(View):
       messages.error(request, f'{strip_tags(e)}')
     return redirect('view_delete_account')
 
-
 class ViewSubscription(View):
   def get(self, request):
     try:
@@ -101,13 +99,27 @@ class ViewSubscription(View):
     }
     return render(request, "profile/subscription.html", context) 
 
-  def post(self, request):
-    pass
+
+  def post(self, request): # AJAX POST request
+    action   = request.POST.get('action')
+    
+    if action == 'add-new-subscription':
+      return new_user_subscription(request)
+    
+    if action == 'deactivate-subscription':
+      return deactivate_user_subscription(request)
+    
+    if action == 'activate-subscription':
+      return activate_user_subscription(request)
+
+    if action == 'modify-subscription':
+      return modify_user_subscription(request)
+
+    
 
 def new_user_subscription(request):
-  type = request.GET.get('type')
-  subscription = SubscriptionType.objects.get(type=type)
-  UserSubscription.objects.create(user=request.user, subscription=subscription)
+  sub_type = request.POST.get('sub-type')
+  UserSubscription.objects.create(user=request.user, subscription_id=sub_type)
   messages.success(request, f"Abbonamento creato con successo!")
   return JsonResponse({}, status=200)
 
@@ -126,8 +138,8 @@ def activate_user_subscription(request):
   return JsonResponse({}, status=200)
 
 def modify_user_subscription(request):
-  type = request.GET.get('type')
-  subscription = SubscriptionType.objects.get(type=type)
+  sub_type = request.POST.get('sub-type')
+  subscription = SubscriptionType.objects.get(type=sub_type)
   us = UserSubscription.objects.get(user=request.user)
   us.subscription = subscription
   us.save()
