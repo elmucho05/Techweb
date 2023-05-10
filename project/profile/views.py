@@ -115,8 +115,7 @@ class ViewSubscription(View):
     if action == 'modify-subscription':
       return modify_user_subscription(request)
 
-    
-
+  
 def new_user_subscription(request):
   sub_type = request.POST.get('sub-type')
   UserSubscription.objects.create(user=request.user, subscription_id=sub_type)

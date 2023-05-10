@@ -57,6 +57,7 @@ class Title(models.Model):
   thumb         = models.ForeignKey(Thumb, null=True, on_delete=models.SET_NULL)
   genre         = models.ForeignKey(Genre, null=True, on_delete=models.SET_NULL)
   type          = models.CharField(max_length=5, choices=[('film', 'film'), ('serie', 'serie')])
+  
 
   def __str__(self) -> str:
     return self.name
