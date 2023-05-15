@@ -9,6 +9,8 @@ from django.utils.html import strip_tags
 from django.views.decorators.http import require_POST
 
 from .models import UserProfile, UserComment, UserReview, UserHistory, SubscriptionType, UserSubscription
+from .forms import FormFilm, FormTitle, FormVideo, FormThumb
+
 
 class ViewProfile(LoginRequiredMixin, View):
   login_url = '/authentication/login/'
@@ -145,3 +147,31 @@ def modify_user_subscription(request):
   messages.success(request, f'Abbonamento modificato con successo!')
   return JsonResponse({}, status=200)
 
+
+class ViewUploadFilm(View):
+  def get(self, request):
+    context = { 'sub_is_active' : True }
+    try:
+      user_sub = UserSubscription.objects.get(user=request.user)
+
+      if not user_sub.is_active:
+        raise Exception()
+
+    except:
+      context['sub_is_active'] = False
+      messages.error(request, 'Servizio disponibile solo per i possessori di un abbonamento attivo')
+    
+    context['form_thumb'] = FormThumb()
+    context['form_video'] = FormVideo()
+    context['form_title'] = FormTitle()
+    context['form_film']  = FormFilm()
+    return render(request, 'profile/insert-film.html', context)
+
+  def post(self, request):
+    form_thumb = FormThumb(request.POST, request.FILES)
+    form_video = FormVideo(request.POST, request.FILES)
+    form_title = FormTitle(request.POST)
+    form_film  = FormFilm(request.POST)
+    print(form_thumb.is_valid(), form_video.is_valid(), form_title.is_valid(), form_film.is_valid())    
+    
+    return redirect('view_upload_film')

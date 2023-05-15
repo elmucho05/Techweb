@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Profilo{% endblock %}
+
+
+{% block content %}<!-- Start content -->
+{% include 'navbar.html' %}
+{% load static %}
+<div class="container-fluid">
+  <div class="row">
+
+    {% include 'profile/sidebar.html' %}
+    
+    <div class="col-lg-10 border-start">
+      <div class="container py-5">
+
+        {% include 'alert.html' %}
+
+        {% if sub_is_active %}
+        <div class="card border-0">
+          <h3 class="card-header">Inserisci un tuo film</h3>
+
+          <div class="card-body">
+            {% load crispy_forms_tags %}
+            <form action="{% url 'view_upload_film' %}" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              {{ form_title|crispy }}
+
+              {{ form_film|crispy }}
+              
+              {{ form_thumb|crispy }}
+
+              {{ form_video|crispy }}
+
+              <button class="btn btn-primary" type="submit">Inserisci</button>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+      
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} <!-- End content -->
+
+
+{% block script %}<!-- Start script -->
+<script>
+const typeSelector = document.querySelector('#id_type');
+typeSelector.value = 'film';
+typeSelector.disabled = true;
+</script>
+{% endblock %}<!-- End script -->

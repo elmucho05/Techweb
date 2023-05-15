@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
-from django.contrib.auth.models import User
 
 class Genre(models.Model):
   name = models.CharField(primary_key=True, max_length=30)
@@ -18,11 +17,11 @@ rappresenta un video
 class Video(models.Model):
   id        = models.BigAutoField(primary_key=True)
   src       = models.FileField(upload_to='videos',null=True, 
-                  validators=[FileExtensionValidator(allowed_extensions=['MOV','avi','mp4','webm','mkv'])])
-  duration  = models.IntegerField()
+                validators=[FileExtensionValidator(allowed_extensions=['MOV','avi','mp4','webm','mkv'])])
+  duration  = models.PositiveIntegerField()
 
   def __str__(self) -> str:
-    return str(self.src) 
+    return str(self.src)
 
 
 """
