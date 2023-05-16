@@ -27,7 +27,7 @@
         {% for item in favorites %}
         <div class="col">
           <div class="card h-100 border-0">
-            <img src="{% get_media_prefix %}thumbs/{{ item.title.thumb }}" class="card-img-top rounded-0" style="height: 180px;">
+            <img src="{% get_media_prefix %}{{ item.title.thumb.thumb_src }}" class="card-img-top rounded-0" style="height: 180px;">
             <div class="card-body">
               <h6 class="card-title">
                 <a href="{% url 'view_details' item.title.id %}" class=" text-decoration-none text-body">{{ item.title.name }}</a>

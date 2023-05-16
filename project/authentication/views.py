@@ -54,7 +54,6 @@ class ViewSignUp(View):
       return redirect('view_browse')
     
     for e in self.form.errors.values():
-      print(e)
       messages.error(request, f'{strip_tags(e)}')
     return redirect('view_signup')
 
