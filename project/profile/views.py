@@ -172,16 +172,10 @@ class ViewUploadFilm(LoginRequiredMixin, View):
       context['sub_is_active'] = False
       messages.error(request, 'Servizio disponibile solo per i possessori di un abbonamento attivo')
     
-    context['form_title'] = FormTitle(initial={
-      'name':'nometitolo', 
-      'release_date': '2022-12-1', 
-      'description':'descrizionetitolo',
-      'genre':'Azione',
-      'type' : 'film'
-      })
-    context['form_film']  = FormFilm(initial={'director':'nomeregista'})
+    context['form_title'] = FormTitle(initial={'type' : 'film'})
+    context['form_film']  = FormFilm()
     context['form_thumb'] = FormThumb()
-    context['form_video'] = FormVideo(initial={'duration':'90'})
+    context['form_video'] = FormVideo()
     return render(request, 'profile/insert-film.html', context)
 
   def post(self, request):
