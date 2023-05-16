@@ -16,12 +16,12 @@ rappresenta un video
 """
 class Video(models.Model):
   id        = models.BigAutoField(primary_key=True)
-  src       = models.FileField(upload_to='videos',null=True, 
+  video_src = models.FileField(upload_to='videos',null=True, 
                 validators=[FileExtensionValidator(allowed_extensions=['MOV','avi','mp4','webm','mkv'])])
   duration  = models.PositiveIntegerField()
 
   def __str__(self) -> str:
-    return str(self.src)
+    return str(self.video_src)
 
 
 """
@@ -31,11 +31,11 @@ rappresenta la copertina di un titolo
 """
 class Thumb(models.Model):
   id  = models.BigAutoField(primary_key=True)
-  src = models.ImageField(upload_to='thumbs', null=True, 
+  thumb_src = models.ImageField(upload_to='thumbs', null=True, 
           validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png','svg'])])
   
   def __str__(self) -> str:
-    return str(self.src) 
+    return str(self.thumb_src) 
 
 
 """

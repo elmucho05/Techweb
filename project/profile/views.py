@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.utils.html import strip_tags
 from django.views.decorators.http import require_POST
 
+from movies.models import Title, Film, Genre
 from .models import UserProfile, UserComment, UserReview, UserHistory, SubscriptionType, UserSubscription
 from .forms import FormFilm, FormTitle, FormVideo, FormThumb
 
@@ -49,7 +50,10 @@ def delete_user_comment(request):
   return JsonResponse({}, status=200)
 
 
-class ViewUpdatePassword(View):
+class ViewUpdatePassword(LoginRequiredMixin, View):
+  login_url = '/authentication/login/'
+  redirect_field_name = 'redirect_to'
+  
   def get(self, request):
     context = { 'form' :  PasswordChangeForm(request.user) }
     return render(request, "profile/update-password.html", context) 
@@ -65,7 +69,10 @@ class ViewUpdatePassword(View):
         messages.error(request,f'{strip_tags(e)}')
     return redirect('view_update_password')
 
-class ViewDeleteAccount(View):
+class ViewDeleteAccount(LoginRequiredMixin, View):
+  login_url = '/authentication/login/'
+  redirect_field_name = 'redirect_to'
+  
   def get(self, request):
     context = { 'form' : AuthenticationForm()}
     return render(request, "profile/delete-account.html", context) 
@@ -89,7 +96,10 @@ class ViewDeleteAccount(View):
       messages.error(request, f'{strip_tags(e)}')
     return redirect('view_delete_account')
 
-class ViewSubscription(View):
+class ViewSubscription(LoginRequiredMixin, View):
+  login_url = '/authentication/login/'
+  redirect_field_name = 'redirect_to'
+  
   def get(self, request):
     try:
       user_sub = UserSubscription.objects.get(user=request.user)
@@ -148,30 +158,78 @@ def modify_user_subscription(request):
   return JsonResponse({}, status=200)
 
 
-class ViewUploadFilm(View):
+class ViewUploadFilm(LoginRequiredMixin, View):
+  login_url = '/authentication/login/'
+  redirect_field_name = 'redirect_to'
+  
   def get(self, request):
     context = { 'sub_is_active' : True }
     try:
       user_sub = UserSubscription.objects.get(user=request.user)
-
       if not user_sub.is_active:
         raise Exception()
-
     except:
       context['sub_is_active'] = False
       messages.error(request, 'Servizio disponibile solo per i possessori di un abbonamento attivo')
     
+    context['form_title'] = FormTitle(initial={
+      'name':'nometitolo', 
+      'release_date': '2022-12-1', 
+      'description':'descrizionetitolo',
+      'genre':'Azione',
+      'type' : 'film'
+      })
+    context['form_film']  = FormFilm(initial={'director':'nomeregista'})
     context['form_thumb'] = FormThumb()
-    context['form_video'] = FormVideo()
-    context['form_title'] = FormTitle()
-    context['form_film']  = FormFilm()
+    context['form_video'] = FormVideo(initial={'duration':'90'})
     return render(request, 'profile/insert-film.html', context)
 
   def post(self, request):
-    form_thumb = FormThumb(request.POST, request.FILES)
-    form_video = FormVideo(request.POST, request.FILES)
+    print(request.POST)
+    
     form_title = FormTitle(request.POST)
     form_film  = FormFilm(request.POST)
-    print(form_thumb.is_valid(), form_video.is_valid(), form_title.is_valid(), form_film.is_valid())    
+    form_thumb = FormThumb(request.POST, request.FILES)
+    form_video = FormVideo(request.POST, request.FILES)
     
+    if form_thumb.is_valid() and form_video.is_valid() and form_title.is_valid() and form_film.is_valid():
+      try:
+        genre = Genre.objects.get(name=request.POST.get('genre'))
+
+        video = form_video.save()
+        
+        thumb = form_thumb.save()
+        
+        title = Title.objects.create(
+          name=request.POST.get('name'), 
+          release_date=request.POST.get('release_date'),
+          description=request.POST.get('description'),
+          type=request.POST.get('type'),
+          genre=genre,
+          thumb=thumb)
+        film = Film.objects.create(
+          director=request.POST.get('director'),
+          title=title, 
+          video=video)
+        messages.success(request, 'Film aggiunto nella piattaforma con successo!')
+      except Exception as e:
+        messages.error(request, str(e))
+    
+    else:
+      if not form_thumb.is_valid():
+        messages.error(request, f'Il file della copertina non è valido. Le estensioni permesse sono jpg,jpeg,png,svg')
+
+      if not form_video.is_valid():
+        messages.error(request, f'Il file video non è valido. Le estensioni permesse sono MOV,avi,mp4,webm,mkv')
+
+      if not form_title.is_valid():
+        for e in form_title.errors.values():
+          messages.error(request, strip_tags(e))
+
+      if not form_film.is_valid():
+        for e in form_film.errors.values():
+          messages.error(request, strip_tags(e))
+
     return redirect('view_upload_film')
+    
+    

@@ -1,4 +1,6 @@
+from django import forms
 from django.forms import ModelForm
+import datetime
 
 from movies.models import Title, Video, Film, Thumb
 
@@ -8,7 +10,7 @@ class FormThumb(ModelForm):
     model = Thumb
     fields = "__all__"
     labels = {
-      'src' : "Seleziona l'immagine copertina"
+      'thumb_src' : "Seleziona l'immagine copertina"
     }
 
 
@@ -18,9 +20,8 @@ class FormVideo(ModelForm):
     model = Video
     fields = "__all__"
     labels = {
-      'src' : "Seleziona il file video",
-      'duration' : 'Durata'
-
+      'video_src' : "Seleziona il file video",
+      'duration' : 'Durata (in minuti)'
     }
 
 
@@ -29,14 +30,15 @@ class FormTitle(ModelForm):
   class Meta:
     model = Title
     fields = "__all__"
-    exclude = ['thumb'] # exclude Foreign Key 
+    exclude = ['thumb'] # exclude Foreign Key
     labels = {
       'name' : 'Nome del film',
-      'release_date' : 'Data di uscita',
+      'release_date' : 'Data di uscita (AAAA-MM-GG)',
       'description' : 'Descrizione',
       'type' : 'Tipo'
     }
-
+    widgets = {'type': forms.HiddenInput()}
+    
 
 """ Model Film """
 class FormFilm(ModelForm):
