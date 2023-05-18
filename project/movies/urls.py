@@ -1,8 +1,11 @@
 from django.urls import path
+from django.views.generic import RedirectView
 
 from . import views
 
 urlpatterns = [
+  path('', RedirectView.as_view(url='browse')),
+
   # http://127.0.0.1:8000/browse
   # http://127.0.0.1:8000/browse?search=<search>
   # http://127.0.0.1:8000/browse?genre=<genre>
@@ -18,4 +21,8 @@ urlpatterns = [
   # http://127.0.0.1:8000/watch/<title-id>
   # http://127.0.0.1:8000/watch/<title-id>?s=<s-id>&e=<ep-id>
   path('watch/<int:title_id>', views.ViewWatchVideo.as_view(), name="view_watch"),
+
+  # http://127.0.0.1:8000/rent-film/<title-id>
+  # ONLY POST
+  path('rent-film/<int:title_id>', views.ViewWatchVideo.as_view(), name="view_rent_film"),
 ]

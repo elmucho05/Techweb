@@ -12,17 +12,21 @@
   <h1>{{ title.name }}</h1>
 
   <ul class="list-group">
-    {% if user.is_authenticated %}
-    <li class="list-group-item px-0 border-0">
-      {% if is_favorite %}
-        <button class="btn btn-danger" onclick="ajaxEvent('{{ title.id }}', 'remove')">Rimuovi dai preferiti</button>
-      {% else %}
-        <button class="btn btn-success" onclick="ajaxEvent('{{ title.id }}', 'add')">Aggiungi ai preferiti</button>
-      {% endif %}
-    </li>
-    {% endif %}
 
-    <li class="list-group-item px-0  border-0"><u>Valutazione:</u>
+
+    <li class="list-group-item px-0  border-0">
+      <u>Costo:</u>
+      <strong>
+        {% if title.included %}
+          <i>Gratuito</i>
+        {% else %}
+          <i>€{{ title.cost }}</i>
+        {% endif %}
+      </strong>
+    </li>
+
+    <li class="list-group-item px-0  border-0">
+      <u>Valutazione:</u>
       <i>
         {% if not rating_avg %}
           0/5 (nessuna recensione)
@@ -50,8 +54,21 @@
       <img src="{% get_media_prefix %}{{ title.thumb.thumb_src }}" style="height: 200px;">
     </li>
 
+    {% if user.is_authenticated %}
+    <li class="list-group-item px-0 border-0">
+      {% if is_favorite %}
+        <button class="btn btn-danger" style="width: 12rem;"
+          onclick="ajaxEvent('{{ title.id }}', 'remove')">Rimuovi dai preferiti</button>
+      {% else %}
+        <button class="btn btn-success" style="width: 12rem;"
+          onclick="ajaxEvent('{{ title.id }}', 'add')">Aggiungi ai preferiti</button>
+      {% endif %}
+    </li>
+    {% endif %}
+
     {% if title.type == "film" %}
     <li class="list-group-item px-0  border-0">
+      {% if title.included %}
       <a class="btn btn-primary" href="{% url 'view_watch' title.id %}" target="_blank" rel="noopener noreferrer">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
           <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -59,6 +76,32 @@
         </svg>
         guarda ora
       </a>
+      {% else %}
+      <button class="btn btn-primary" style="width: 12rem;"
+         data-bs-toggle="modal" data-bs-target="#modal" type="button">
+        Noleggia film
+      </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Conferma acquisto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>Conferma l'acquisto di <strong>{{ title.name }}</strong> per il costo di EURO {{ title.cost }}.</p>
+                <p><small><i>*Il noleggio del titolo ha la durata di 24h</i></small></p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Annulla</button>
+                <button type="button" class="btn btn-primary" onclick="confirmPurchase()">Conferma</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
     </li>
     {% endif %}
   </ul>

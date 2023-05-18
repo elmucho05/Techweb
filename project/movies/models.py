@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.contrib.auth.models import User
 
 class Genre(models.Model):
   name = models.CharField(primary_key=True, max_length=30)
@@ -47,6 +48,8 @@ classe base da cui ereditano Film e TVSerie
 - thumb         copertina del film/serie tv
 - genre         genere del film/serie tv
 - type          distingue il titolo da film o serie tv
+- included      permette di distinguere i titoli che sono inclusi nell'abbonamento
+- cost          [campo facoltativo] costo di noleggio di un titolo 
 """
 class Title(models.Model):
   id            = models.BigAutoField(primary_key=True)
@@ -56,7 +59,8 @@ class Title(models.Model):
   thumb         = models.ForeignKey(Thumb, null=True, on_delete=models.SET_NULL)
   genre         = models.ForeignKey(Genre, null=True, on_delete=models.SET_NULL)
   type          = models.CharField(max_length=5, choices=[('film', 'film'), ('serie', 'serie')])
-  
+  included      = models.BooleanField(default=True)
+  cost          = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=None)
 
   def __str__(self) -> str:
     return self.name
@@ -111,3 +115,16 @@ class Episode(models.Model):
     return f'S{self.num_season} E{self.num_ep} {self.name_ep}'
   
 
+"""
+rappresenta i noleggi dei film effettuati da un utente
+"""
+class RentFilm(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
+  film = models.ForeignKey(Film, on_delete=models.CASCADE)
+
+
+  class Meta:
+    unique_together = (("user", "film"),)
+
+  def __str__(self):
+    return f'{self.user}:{self.film}'

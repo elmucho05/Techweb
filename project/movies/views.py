@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.views.decorators.http import require_http_methods
 from django.views import View
 from django.utils.safestring import mark_safe
 from django.core.exceptions import ValidationError
 from django.db.models import Avg
-from movies.models import Video, Film, TVSerie, Title, Episode
+from movies.models import Film, TVSerie, Title, Episode, RentFilm
 from profile.models import UserComment, UserFavorite, UserReview, UserHistory, UserSubscription
 
 class ViewWatchVideo(LoginRequiredMixin, View):
@@ -16,6 +17,7 @@ class ViewWatchVideo(LoginRequiredMixin, View):
   def get(self, request, title_id):
     context = { }
 
+    # controllo che l'utente abbia un abbonamento attivo
     sub = UserSubscription.objects.filter(user=request.user)
     if not sub.exists():
       messages.error(request, "Il servizio è disponibile solo per gli abbonati!")
@@ -24,6 +26,9 @@ class ViewWatchVideo(LoginRequiredMixin, View):
     if not sub.is_active:
       messages.error(request, "Il servizio è disponibile solo per gli abbonati! Il tuo abbonamento non è attivo")
       return redirect('view_details', title_id)
+
+    # se il titolo non è incluso nell'abbonamento controllo se l'utente abbia
+    # noleggiato il titolo
 
     
     title = get_object_or_404(Title, id=title_id)
@@ -134,10 +139,11 @@ class ViewTitleDetails(View):
 
     if action == 'add-comment':
       return add_comment(request, title_id)
-    # AJAX post request
+    
     if action == 'add-vote':
       return add_vote(request, title_id)
 
+# ViewTitleDetails.post
 def add_comment(request, title_id):
   text = request.POST.get('comment-text')
   try:
@@ -147,6 +153,7 @@ def add_comment(request, title_id):
     messages.error(request, str(e))
   return redirect('view_details', title_id=title_id)
 
+# ViewTitleDetails.post
 def add_vote(request, title_id):
   rating = request.POST.get('rating')
   try:
@@ -167,7 +174,7 @@ class ViewTitleFavorites(LoginRequiredMixin, View):
     }
     return render(request, 'movies/favorites.html', context)
 
-  # AJAX post request
+  
   def post(self, request):
     action   = request.POST.get('action')
     title_id = request.POST.get('title_id')
@@ -176,6 +183,7 @@ class ViewTitleFavorites(LoginRequiredMixin, View):
     if action == 'remove':
       return remove_from_favorites(request, title_id)
 
+# ViewTitleFavorites.post
 def add_to_favorites(request, title_id):
   try:
     UserFavorite.objects.create(user=request.user, title_id=title_id)
@@ -183,6 +191,7 @@ def add_to_favorites(request, title_id):
     return JsonResponse({'message' : str(e)}, status=400)
   return JsonResponse({}, status=200)
 
+# ViewTitleFavorites.post
 def remove_from_favorites(request, title_id):
   try:
     obj = UserFavorite.objects.get(user=request.user, title_id=title_id)
@@ -190,3 +199,8 @@ def remove_from_favorites(request, title_id):
   except ValidationError as e:
     return JsonResponse({'message' : str(e)}, status=400)
   return JsonResponse({}, status=200)
+
+
+@require_http_methods(["POST"])
+def view_rent_film(request, title_id):
+  pass
