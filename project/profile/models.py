@@ -95,9 +95,11 @@ rappresenta l'abbonamento collegato ad un utente per vedere i titoli
 """
 class UserSubscription(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
-  subscription = models.OneToOneField(SubscriptionType, on_delete=models.CASCADE)
-  
+  subscription = models.ForeignKey(SubscriptionType, on_delete=models.CASCADE)
   is_active = models.BooleanField(default=True)
+
+  class Meta:
+    unique_together = (("user", "subscription"),)
 
   def __str__(self):
     return f'{self.user}:{self.subscription}'

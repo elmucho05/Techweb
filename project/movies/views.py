@@ -114,9 +114,13 @@ class ViewTitleDetails(View):
 
   def get(self, request, title_id):
     title = get_object_or_404(Title, id=title_id)
-    
-    is_favorite = request.user.is_authenticated and len(UserFavorite.objects.filter(user=request.user, title=title)) != 0
-    can_vote    = request.user.is_authenticated and len(UserReview.objects.filter(user=request.user, title=title)) == 0
+
+    if not request.user.is_authenticated:
+      messages.info(request, 'Registrati per usufruire del servizio MovieStreaming')
+
+    is_favorite = request.user.is_authenticated and UserFavorite.objects.filter(user=request.user, title=title).exists()
+    can_vote    = request.user.is_authenticated and not UserReview.objects.filter(user=request.user, title=title).exists()
+    purchased   = request.user.is_authenticated and UserPurchase.objects.filter(user=request.user, title=title).exists()
 
     reviews = UserReview.objects.filter(title=title)
     avg = reviews.aggregate(Avg('rating'))['rating__avg']
@@ -128,7 +132,7 @@ class ViewTitleDetails(View):
       "is_favorite" : is_favorite,
       "can_vote"    : can_vote,
       "comments"    : UserComment.objects.filter(title=title),
-      "purchased"   : UserPurchase.objects.filter(user=request.user, title=title).exists()
+      "purchased"   : purchased
     }
 
     if title.type == 'film':

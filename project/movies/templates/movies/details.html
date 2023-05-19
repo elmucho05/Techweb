@@ -76,14 +76,14 @@
     {% endif %}
 
     <!-- Buy title button -->
-    {% if not title.included and not purchased %}
+    {% if request.user.is_authenticated and not title.included and not purchased %}
     <button class="btn btn-primary" style="width: 14rem;"
         data-bs-toggle="modal" data-bs-target="#modal" type="button">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-credit-card" viewBox="0 0 16 16">
         <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
         <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
       </svg>
-      Acquista film
+      Acquista {% if title.type == 'film' %}film{% else %}serie{% endif %}
     </button>
 
     <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
@@ -95,7 +95,6 @@
           </div>
           <div class="modal-body">
             <p>Conferma l'acquisto di <strong>{{ title.name }}</strong> per il costo di EURO {{ title.cost }}.</p>
-            <p><small><i>*Il noleggio del titolo ha la durata di 24h</i></small></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Annulla</button>
@@ -106,6 +105,7 @@
     </div>
     {% endif %}
     
+    {% if request.user.is_authenticated %}
     {% if title.included or purchased %}
     {% if title.type == "film" %}
     <li class="list-group-item px-0  border-0">
@@ -120,8 +120,10 @@
     </li>
     {% endif %}
     {% endif %}
+    {% endif %}
   </ul>
 
+  {% if request.user.is_authenticated %}
   {% if title.included or purchased %}
   {% if title.type == "serie" %}
   <div class="mt-5 mb-5"></div>
@@ -146,6 +148,7 @@
       </ul>
     </div>
   </div>
+  {% endif %}
   {% endif %}
   {% endif %}
 

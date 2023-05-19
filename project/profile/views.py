@@ -112,7 +112,7 @@ class ViewSubscription(LoginRequiredMixin, View):
 
   def post(self, request):
     action = request.POST.get('action')
-    
+
     if action == 'add-new-subscription':
       return new_user_subscription(request)
     
@@ -143,7 +143,8 @@ def new_user_subscription(request):
     UserSubscription.objects.create(user=request.user, subscription_id=sub_type)
     messages.success(request, f"Abbonamento creato con successo!")
   except Exception as e:
-    return JsonResponse({'message':str(e)}, status=400)  
+    print(f'Exception={str(e)}')
+    return JsonResponse({'message':str(e)}, status=400)
   
   return JsonResponse({}, status=200)
 
