@@ -21,8 +21,7 @@ Feature aggiuntive (obbligatorio)
 - dashboard per utenti con possibilità di aggiornare i propri dati personali, visualizzare la history dei film visti, dei commenti effettuati, delle valutazioni fatte, visualizzare lo stato dell'abbonamento ...
 
 # TODO List
-1. i film possono essere inclusi nell'abbonamento (quindi "gratuiti" per gli utenti) oppure essere noleggiati con una piccola somma aggiuntiva
-2. i film vengono consigliati agli utenti (registrati)
+1. i film vengono consigliati agli utenti (registrati)
 
 ## Prerequisiti
 1. Installare pip
