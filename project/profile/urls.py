@@ -20,6 +20,9 @@ urlpatterns = [
   # http://127.0.0.1:8000/profile/subscription
   path('subscription', views.ViewSubscription.as_view(), name="view_subscription"),
 
+  # http://127.0.0.1:8000/profile/your-purchases
+  path('your-purchases', views.ViewPurchase.as_view(), name="view_purchases"),
+
   # http://127.0.0.1:8000/profile/upload-title
   path('upload-film', views.ViewUploadFilm.as_view(), name="view_upload_film"),
 

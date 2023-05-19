@@ -103,4 +103,16 @@ class UserSubscription(models.Model):
     return f'{self.user}:{self.subscription}'
 
   
-  
+"""
+rappresenta i titoli acquistati da un utente
+"""
+class UserPurchase(models.Model):
+  user  = models.ForeignKey(User, on_delete=models.CASCADE)
+  title = models.ForeignKey(Title, on_delete=models.CASCADE)
+  date  = models.DateField(default=timezone.now)
+
+  class Meta:
+    unique_together = (("user", "title"),)
+
+  def __str__(self):
+    return f'{self.user}:{self.title}:{self.date}'

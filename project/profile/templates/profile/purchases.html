@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Profilo{% endblock %}
+
+
+{% block content %}<!-- Start content -->
+{% include 'navbar.html' %}
+{% load static %}
+<div class="container-fluid">
+  <div class="row">
+
+    {% include 'profile/sidebar.html' %}
+    
+    <div class="col-lg-10 border-start">
+      <div class="container py-5">
+
+        {% include 'alert.html' %}
+
+        <div class="card border-0"> <!-- Start subscription  -->
+          <div class="card-body">
+            <h4 class="card-title">Titoli acquistati</h4>
+            <div class="mb-3"></div>
+            
+            {% if purchases %}
+              <ul class="list-group list-group-flush">
+                {% for purchase in purchases %}
+                  <li class="list-group-item">
+                    <h6>{{ purchase.title.name }} - €{{ purchase.title.cost }}</h6>  
+                    <small>Acquistato il giorno: {{ purchase.date }}</small>                      
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <h6>Non hai effettuato nessun acquisti</h6>
+            {% endif %}
+          </div>
+        </div><!-- End subscription -->
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} <!-- End content -->
+
+
+{% block script %}<!-- Start script -->
+<script>
+
+
+</script>
+{% endblock %}<!-- End script -->

@@ -114,17 +114,3 @@ class Episode(models.Model):
   def __str__(self) -> str:
     return f'S{self.num_season} E{self.num_ep} {self.name_ep}'
   
-
-"""
-rappresenta i noleggi dei film effettuati da un utente
-"""
-class RentFilm(models.Model):
-  user = models.ForeignKey(User, on_delete=models.CASCADE)
-  film = models.ForeignKey(Film, on_delete=models.CASCADE)
-
-
-  class Meta:
-    unique_together = (("user", "film"),)
-
-  def __str__(self):
-    return f'{self.user}:{self.film}'

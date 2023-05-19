@@ -20,7 +20,7 @@
         {% if title.included %}
           <i>Gratuito</i>
         {% else %}
-          <i>€{{ title.cost }}</i>
+          <i>€{{ title.cost }} {% if purchased %}(Acquistato){% endif %}</i>
         {% endif %}
       </strong>
     </li>
@@ -54,58 +54,75 @@
       <img src="{% get_media_prefix %}{{ title.thumb.thumb_src }}" style="height: 200px;">
     </li>
 
+    <!-- Favorite button -->
     {% if user.is_authenticated %}
     <li class="list-group-item px-0 border-0">
       {% if is_favorite %}
-        <button class="btn btn-danger" style="width: 12rem;"
-          onclick="ajaxEvent('{{ title.id }}', 'remove')">Rimuovi dai preferiti</button>
+        <button class="btn btn-danger" style="width: 14rem;"
+          onclick="ajaxEvent('{{ title.id }}', 'remove')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
+            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"/>
+          </svg>
+          Rimuovi dai preferiti</button>
       {% else %}
-        <button class="btn btn-success" style="width: 12rem;"
-          onclick="ajaxEvent('{{ title.id }}', 'add')">Aggiungi ai preferiti</button>
+        <button class="btn btn-success" style="width: 14rem;"
+          onclick="ajaxEvent('{{ title.id }}', 'add')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
+            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"/>
+          </svg>
+          Aggiungi ai preferiti</button>
       {% endif %}
     </li>
     {% endif %}
 
+    <!-- Buy title button -->
+    {% if not title.included and not purchased %}
+    <button class="btn btn-primary" style="width: 14rem;"
+        data-bs-toggle="modal" data-bs-target="#modal" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-credit-card" viewBox="0 0 16 16">
+        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
+        <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+      </svg>
+      Acquista film
+    </button>
+
+    <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel">Conferma acquisto</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Conferma l'acquisto di <strong>{{ title.name }}</strong> per il costo di EURO {{ title.cost }}.</p>
+            <p><small><i>*Il noleggio del titolo ha la durata di 24h</i></small></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Annulla</button>
+            <button type="button" class="btn btn-primary" onclick="confirmPurchase()">Conferma</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    
+    {% if title.included or purchased %}
     {% if title.type == "film" %}
     <li class="list-group-item px-0  border-0">
-      {% if title.included %}
-      <a class="btn btn-primary" href="{% url 'view_watch' title.id %}" target="_blank" rel="noopener noreferrer">
+      <a class="btn btn-primary" style="width: 14rem;"
+        href="{% url 'view_watch' title.id %}" target="_blank" rel="noopener noreferrer">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
           <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
           <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
         </svg>
         guarda ora
       </a>
-      {% else %}
-      <button class="btn btn-primary" style="width: 12rem;"
-         data-bs-toggle="modal" data-bs-target="#modal" type="button">
-        Noleggia film
-      </button>
-
-        <!-- Modal -->
-        <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="modalLabel">Conferma acquisto</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <p>Conferma l'acquisto di <strong>{{ title.name }}</strong> per il costo di EURO {{ title.cost }}.</p>
-                <p><small><i>*Il noleggio del titolo ha la durata di 24h</i></small></p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Annulla</button>
-                <button type="button" class="btn btn-primary" onclick="confirmPurchase()">Conferma</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      {% endif %}
     </li>
+    {% endif %}
     {% endif %}
   </ul>
 
+  {% if title.included or purchased %}
   {% if title.type == "serie" %}
   <div class="mt-5 mb-5"></div>
   <div class="card border-0">
@@ -129,6 +146,7 @@
       </ul>
     </div>
   </div>
+  {% endif %}
   {% endif %}
 
   <div class="mt-5 mb-5"></div>
@@ -226,14 +244,14 @@
     });
   }
 
-
   function vote(){
     const rating = $('input[name="inlineRadioOptions"]:checked').val();
       $.ajax({
-        url     : `{% url 'view_details' title.id %}?action=add-vote`,
+        url     : `{% url 'view_details' title.id %}`,
         method  : "POST",
         data    : { 
           csrfmiddlewaretoken : '{{ csrf_token }}',
+          action   : 'add-vote',
           rating : rating
         },
         datatype: "json",
@@ -245,6 +263,25 @@
           alert(message);
         }
       });
+  }
+
+  function confirmPurchase(){
+    $.ajax({
+      url     : `{% url 'view_details' title.id %}`,
+      method  : "POST",
+      data    : { 
+        csrfmiddlewaretoken : '{{ csrf_token }}',
+        action   : 'buy-title',
+      },
+      datatype: "json",
+      success : function(data){
+        location.reload();
+      },
+      error : function(data){
+        const message = data.message;
+        alert(message);
+      }
+    });
   }
 </script>
 {% endblock %}
