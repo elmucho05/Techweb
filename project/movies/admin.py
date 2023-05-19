@@ -9,3 +9,4 @@ admin.site.register(Title)
 admin.site.register(Film)
 admin.site.register(TVSerie)
 admin.site.register(Episode)
+

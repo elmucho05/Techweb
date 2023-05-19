@@ -1,8 +1,11 @@
 from django.urls import path
+from django.views.generic import RedirectView
 
 from . import views
 
 urlpatterns = [
+  path('', RedirectView.as_view(url='browse')),
+
   # http://127.0.0.1:8000/browse
   # http://127.0.0.1:8000/browse?search=<search>
   # http://127.0.0.1:8000/browse?genre=<genre>

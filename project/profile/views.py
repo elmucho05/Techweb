@@ -9,7 +9,7 @@ from django.utils.html import strip_tags
 from django.views.decorators.http import require_POST
 
 from movies.models import Title, Film, Genre
-from .models import UserProfile, UserComment, UserReview, UserHistory, SubscriptionType, UserSubscription
+from .models import UserProfile, UserComment, UserReview, UserHistory, SubscriptionType, UserSubscription, UserPurchase
 from .forms import FormFilm, FormTitle, FormVideo, FormThumb
 
 
@@ -26,7 +26,6 @@ class ViewProfile(LoginRequiredMixin, View):
     }
     return render(request, "profile/account.html", context)
 
-
 @require_POST
 def update_user_avatar(request):
   user_profile = UserProfile.objects.get(user=request.user)
@@ -37,16 +36,15 @@ def update_user_avatar(request):
   return redirect('view_profile')
 
 
-@require_POST # AJAX POST request
+@require_POST
 def delete_user_comment(request):
   comment_id = request.POST.get('comment-id')
-
   try:
     UserComment.objects.get(id=comment_id).delete()
+    messages.success(request, 'Commento eliminato con successo')
   except Exception as e:
     return JsonResponse({'message' : str(e)}, status=400)
 
-  messages.success(request, 'Commento eliminato con successo')
   return JsonResponse({}, status=200)
 
 
@@ -112,9 +110,9 @@ class ViewSubscription(LoginRequiredMixin, View):
     return render(request, "profile/subscription.html", context) 
 
 
-  def post(self, request): # AJAX POST request
-    action   = request.POST.get('action')
-    
+  def post(self, request):
+    action = request.POST.get('action')
+
     if action == 'add-new-subscription':
       return new_user_subscription(request)
     
@@ -127,11 +125,27 @@ class ViewSubscription(LoginRequiredMixin, View):
     if action == 'modify-subscription':
       return modify_user_subscription(request)
 
+class ViewPurchase(LoginRequiredMixin, View):
+  login_url = '/authentication/login/'
+  redirect_field_name = 'redirect_to'
+  
+  def get(self, request):
+    purchases = UserPurchase.objects.filter(user=request.user)
+    context = {
+      'purchases' : purchases
+    }
+    return render(request, "profile/purchases.html", context) 
+
   
 def new_user_subscription(request):
   sub_type = request.POST.get('sub-type')
-  UserSubscription.objects.create(user=request.user, subscription_id=sub_type)
-  messages.success(request, f"Abbonamento creato con successo!")
+  try:
+    UserSubscription.objects.create(user=request.user, subscription_id=sub_type)
+    messages.success(request, f"Abbonamento creato con successo!")
+  except Exception as e:
+    print(f'Exception={str(e)}')
+    return JsonResponse({'message':str(e)}, status=400)
+  
   return JsonResponse({}, status=200)
 
 def deactivate_user_subscription(request):
@@ -172,16 +186,10 @@ class ViewUploadFilm(LoginRequiredMixin, View):
       context['sub_is_active'] = False
       messages.error(request, 'Servizio disponibile solo per i possessori di un abbonamento attivo')
     
-    context['form_title'] = FormTitle(initial={
-      'name':'nometitolo', 
-      'release_date': '2022-12-1', 
-      'description':'descrizionetitolo',
-      'genre':'Azione',
-      'type' : 'film'
-      })
-    context['form_film']  = FormFilm(initial={'director':'nomeregista'})
+    context['form_title'] = FormTitle(initial={'type' : 'film'})
+    context['form_film']  = FormFilm()
     context['form_thumb'] = FormThumb()
-    context['form_video'] = FormVideo(initial={'duration':'90'})
+    context['form_video'] = FormVideo()
     return render(request, 'profile/insert-film.html', context)
 
   def post(self, request):

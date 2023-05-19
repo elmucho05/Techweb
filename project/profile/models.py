@@ -95,12 +95,26 @@ rappresenta l'abbonamento collegato ad un utente per vedere i titoli
 """
 class UserSubscription(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
-  subscription = models.OneToOneField(SubscriptionType, on_delete=models.CASCADE)
-  
+  subscription = models.ForeignKey(SubscriptionType, on_delete=models.CASCADE)
   is_active = models.BooleanField(default=True)
+
+  class Meta:
+    unique_together = (("user", "subscription"),)
 
   def __str__(self):
     return f'{self.user}:{self.subscription}'
 
   
-  
+"""
+rappresenta i titoli acquistati da un utente
+"""
+class UserPurchase(models.Model):
+  user  = models.ForeignKey(User, on_delete=models.CASCADE)
+  title = models.ForeignKey(Title, on_delete=models.CASCADE)
+  date  = models.DateField(default=timezone.now)
+
+  class Meta:
+    unique_together = (("user", "title"),)
+
+  def __str__(self):
+    return f'{self.user}:{self.title}:{self.date}'
