@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
-from django.contrib.auth.models import User
 
 class Genre(models.Model):
   name = models.CharField(primary_key=True, max_length=30)
@@ -41,7 +40,6 @@ class Thumb(models.Model):
 
 """
 classe base da cui ereditano Film e TVSerie
-- id            identificatore
 - name          nome del film/serie tv
 - release_date  data di rilascio del film/serie tv
 - description   descrizione del film/serie tv
@@ -52,8 +50,7 @@ classe base da cui ereditano Film e TVSerie
 - cost          [campo facoltativo] costo di noleggio di un titolo 
 """
 class Title(models.Model):
-  id            = models.BigAutoField(primary_key=True)
-  name          = models.CharField(max_length=100)
+  name          = models.CharField(max_length=100, unique=True)
   release_date  = models.DateField()
   description   = models.TextField()
   thumb         = models.ForeignKey(Thumb, null=True, on_delete=models.SET_NULL)

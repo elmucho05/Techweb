@@ -197,10 +197,11 @@
     
     {% if user.is_authenticated %}
     <div class="card-body">
-      <form action="{% url 'view_details' title.id %}?action=add-comment" method="POST">
+      <form action="{% url 'view_details' title.id %}" method="POST">
         {% csrf_token %} 
         <label class="form-label">Aggiungi un commento</label>
         <textarea class="form-control" name="comment-text" rows="3"></textarea>
+        <input type="text" name="action" value="add-comment" hidden>
         <button class="btn btn-primary mt-3 mb-3" type="submit">Aggiungi</button>
       </form>
     </div>
@@ -227,6 +228,7 @@
 
 {% block script %}
 <script type="text/javascript">
+  // add/remove favorites
   function ajaxEvent(title_id, action){
     $.ajax({
       url     : `{% url 'view_favorites' %}`,

@@ -52,8 +52,11 @@
               {% for comment in comments %}
               <li class="list-group-item border-0">
                 <h6 class="fw-bold">{{ comment.title }}</h6>
-                <p>{{ comment.text }}</p>
-                <button class="btn btn-danger" onclick="deleteComment('{{ comment.id }}')">Elimina</button>
+                <p>{{ comment.text }}
+                  <button class="btn btn-link text-danger py-0" onclick="deleteComment('{{ comment.id }}')">
+                    Elimina
+                  </button>
+                </p>
               </li>
               {% endfor %}
             </ul>

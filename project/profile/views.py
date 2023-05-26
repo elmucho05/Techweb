@@ -193,8 +193,6 @@ class ViewUploadFilm(LoginRequiredMixin, View):
     return render(request, 'profile/insert-film.html', context)
 
   def post(self, request):
-    print(request.POST)
-    
     form_title = FormTitle(request.POST)
     form_film  = FormFilm(request.POST)
     form_thumb = FormThumb(request.POST, request.FILES)
@@ -203,11 +201,9 @@ class ViewUploadFilm(LoginRequiredMixin, View):
     if form_thumb.is_valid() and form_video.is_valid() and form_title.is_valid() and form_film.is_valid():
       try:
         genre = Genre.objects.get(name=request.POST.get('genre'))
-
         video = form_video.save()
-        
         thumb = form_thumb.save()
-        
+
         title = Title.objects.create(
           name=request.POST.get('name'), 
           release_date=request.POST.get('release_date'),
@@ -215,6 +211,7 @@ class ViewUploadFilm(LoginRequiredMixin, View):
           type=request.POST.get('type'),
           genre=genre,
           thumb=thumb)
+        
         film = Film.objects.create(
           director=request.POST.get('director'),
           title=title, 

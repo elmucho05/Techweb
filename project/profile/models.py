@@ -75,7 +75,9 @@ class UserHistory(models.Model):
   class Meta:
     unique_together = (("user", "title"),)
 
-
+  def __str__(self) -> str:
+    return f'{self.user}:{self.title}'
+  
 
 """
 rappresenta i vari tipi di abbonamento disponibili

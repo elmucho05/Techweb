@@ -67,12 +67,22 @@ class ViewBrowse(View):
     if section and section == 'serie': return browse_series(request)
 
 def view_home(request):
+  context = { }
+  
+  if not request.user.is_authenticated:
+    messages.info(request, 'Registrati per usufruire del servizio MovieStreaming')
+  
+  # show recommended titles
+  else:
+    history = UserHistory.objects.filter(user=request.user)
+    genres = { i.title.genre for i in history }
+    recommended = Title.objects.filter(genre__in=genres)
+    context['recommended'] = recommended
+  
   titles = Title.objects.all()
   genres = titles.values("genre_id").distinct()
-  context = {
-    "titles" : titles,
-    "genres" : genres,
-  }
+  context['titles'] = titles
+  context['genres'] = genres
   return render(request, "movies/home.html", context)
 
 def browse_films(request):
@@ -148,7 +158,7 @@ class ViewTitleDetails(View):
     return render(request, "movies/details.html", context)
 
   def post(self, request, title_id):
-    action = request.POST.get('action')
+    action = request.POST.get('action', None)
     if action == 'add-comment':
       return add_comment(request, title_id)
     
