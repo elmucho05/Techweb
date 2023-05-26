@@ -1,6 +1,5 @@
 from django import forms
 from django.forms import ModelForm
-import datetime
 
 from movies.models import Title, Video, Film, Thumb
 
@@ -30,14 +29,15 @@ class FormTitle(ModelForm):
   class Meta:
     model = Title
     fields = "__all__"
-    exclude = ['thumb'] # exclude Foreign Key
+    exclude = ['included', 'cost', 'thumb'] # exclude: "included", "cost" and "thumb" fields
     labels = {
       'name' : 'Nome del film',
       'release_date' : 'Data di uscita (AAAA-MM-GG)',
       'description' : 'Descrizione',
-      'type' : 'Tipo'
+      'type' : 'Tipo',
+      'genre' : 'genere',
     }
-    widgets = {'type': forms.HiddenInput()}
+    widgets = { 'type': forms.HiddenInput() }
     
 
 """ Model Film """
